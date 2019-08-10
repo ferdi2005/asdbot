@@ -47,7 +47,6 @@ class MessageController < ApplicationController
         end
            end
        end
-    end
 
     if message[:text] == '/start' && (message[:chat][:type] == 'group' || message[:chat][:type] == 'supergroup')
       unless Group.find_by(chat_id: message[:chat][:id])
