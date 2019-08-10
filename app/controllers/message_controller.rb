@@ -36,7 +36,7 @@ class MessageController < ApplicationController
                 addtext = ''
             end
             unless noasdface
-              HTTParty.get("http://api.telegram.org/bot#{bot_api_key}/sendPhoto?chat_id=#{@group.chat_id}&photo=http://www.lanciano.it/faccine/asdone.gif&caption=Così asdoso, asd.")
+              HTTParty.get(URI.escape("http://api.telegram.org/bot#{bot_api_key}/sendPhoto?chat_id=#{@group.chat_id}&photo=http://www.lanciano.it/faccine/asdone.gif&caption=Così asdoso, asd."))
             end
             position = 'primo in assoluto'
             position = Group.all.sort_by{|group| group.asds.count}.pluck(:id).reverse.find_index(@group.id) if Group.count > 0
