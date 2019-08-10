@@ -40,7 +40,7 @@ class MessageController < ApplicationController
             end
             position = 'primo in assoluto'
             position = Group.all.sort_by{|group| group.asds.count}.pluck(:id).reverse.find_index(@group.id) if Group.count > 0
-            HTTParty.get(URI.escape"http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{@group.chat_id}&text=Il contasd conta ben #{asdcount}, asd. Sei il #{position}º gruppo per ASD inviati. #{addtext}"))
+            HTTParty.get(URI.escape("http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{@group.chat_id}&text=Il contasd conta ben #{asdcount}, asd. Sei il #{position}º gruppo per ASD inviati. #{addtext}"))
         end
     end
 
@@ -82,7 +82,6 @@ class MessageController < ApplicationController
         HTTParty.get(URI.escape("http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{message[:chat][:id]}&text=Amico caro, la funzionalità grafico sta arrivando, arriverà quando questo numero (#{Group.count}) sarà uguale a 20, forse. Nel frattempo ti posso solo dire che hai al tuo attivo ben #{@group.asds.count} asd e sei il #{position}º gruppo!"))
       end
     end
-  end
 end
   end
 
