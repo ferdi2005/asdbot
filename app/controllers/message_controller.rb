@@ -1,12 +1,10 @@
-  
-
-  class MessageController < ApplicationController
+class MessageController < ApplicationController
   def message_process
     bot_api_key = '836213850:AAG-aBtJB8khJ53DNRlzORUVcFWOH5SOF9o'
     unless params[:message].blank?
       message = params[:message].to_unsafe_h
-    if message[:chat][:type] == 'group'
-        if message[:text].match?('/asd/')
+    if message[:chat][:type] == 'group' || message[:chat][:type] == 'supergroup'
+        if message[:text].match?('/asd/i')
             unless Group.find_by(chat_id: message[:chat][:id])
               @group = Group.create(chat_id: message[:chat][:id], username: message[:chat][:username])
             else
@@ -44,7 +42,7 @@
         end
     end
 
-    if message[:text] == '/start' && message[:chat][:type] == 'group'
+    if message[:text] == '/start' && message[:chat][:type] == 'group' || message[:chat][:type] == 'supergroup'
       unless Group.find_by(chat_id: message[:chat][:id])
         @group = Group.create(chat_id: message[:chat][:id], username: message[:chat][:username])
       else
@@ -71,7 +69,7 @@
       end
     end
 
-    if message[:text] == '/grafico' && message[:chat][:type] == 'group' 
+    if message[:text] == '/grafico' && message[:chat][:type] == 'group' || message[:chat][:type] == 'supergroup'
       unless Group.find_by(chat_id: message[:chat][:id])
         @group = Group.create(chat_id: message[:chat][:id], username: message[:chat][:username])
         HTTParty.get("http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{message[:chat][:id]}&text=Non ho ancora un grafico per te, sei nuovo per me, non ti conosco. Invia qualche asd e prova questo comando.");
