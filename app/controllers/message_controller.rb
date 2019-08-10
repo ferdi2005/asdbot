@@ -26,7 +26,7 @@ class MessageController < ApplicationController
             when 100
                 addtext = 'IL CENTESIMO ASD, ASD! COMPLIMENTS CONGRATULATIONS AUF WIDERSHEN'
             when 1000
-                addtext = '1000 asd, wow! Questo gruppo è così asdoso, asd'
+                addtext = '1000 asd, wow! Questo gruppo, così asdoso, asd'
             when 10000
                 addtext = '10000 è un record mondiale, asd'
             else
