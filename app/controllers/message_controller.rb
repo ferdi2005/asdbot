@@ -61,7 +61,7 @@ class MessageController < ApplicationController
     end
 
     if message[:text] == '/classifica'
-      HTTParty.get(URI.escape("http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{@group.chat_id}&text=Vai su #{request.domain}/classifica per vedere la classifica."))
+      HTTParty.get(URI.escape("http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{message[:chat][:id]}&text=Vai su #{request.domain}/classifica per vedere la classifica."))
     end 
     if message[:text] == '/start' && message[:chat][:type] == 'private'
       HTTParty.get(URI.escape("http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{message[:chat][:id]}&text=Bella zio! Sono il bot asdoso creato da Ferdinando Traversa (ferdinando.me @ferdi2005) da idea di Valerio Bozzolan (reyboz.it), asd! Aggiungimi ad un bel gruppo e conterò gli asd, altrimenti digita /grafico per il tuo grafico personal personal."))
@@ -69,12 +69,12 @@ class MessageController < ApplicationController
 
     if message[:text] == '/grafico' && message[:chat][:type] == 'private'
       unless Sender.find_by(chat_id: message[:from][:id])
-        HTTParty.get(URI.escape("http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{message.chat.id}&text=Non ho ancora un grafico per te, sei nuovo per me, non ti conosco. Iscriviti in qualche gruppo con questo bot e manda asd a ripetizione, poi torna da me."))
+        HTTParty.get(URI.escape("http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{message[:chat][:id]}&text=Non ho ancora un grafico per te, sei nuovo per me, non ti conosco. Iscriviti in qualche gruppo con questo bot e manda asd a ripetizione, poi torna da me."))
       else
         @sender = Sender.find_by(chat_id: message[:from][:id])
         position = 'primo in assoluto'
         position = Sender.all.sort_by{|sender| sender.asds.count}.pluck(:id).reverse.find_index(@sender.id) if Sender.count > 0
-        HTTParty.get(URI.escape("http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{message.chat.id}&text=Amico caro, la funzionalità grafico sta arrivando, arriva quando questo numero (#{Group.count}) uguale a 20, forse. Nel frattempo ti posso solo dire che hai al tuo attivo ben #{@sender.asds.count} asd e sei il #{position}º inviatore di ASD classifica globale!"))
+        HTTParty.get(URI.escape("http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{message[:chat][:id]}&text=Amico caro, la funzionalità grafico sta arrivando, arriva quando questo numero (#{Group.count}) uguale a 20, forse. Nel frattempo ti posso solo dire che hai al tuo attivo ben #{@sender.asds.count} asd e sei il #{position}º inviatore di ASD classifica globale!"))
       end
     end
 
