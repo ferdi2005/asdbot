@@ -3,7 +3,9 @@ class MessageController < ApplicationController
     bot_api_key = '836213850:AAG-aBtJB8khJ53DNRlzORUVcFWOH5SOF9o'
     unless params[:message].blank?
       message = OpenStruct.new(params[:message].to_unsafe_h)
+      logger.debug message.to_yaml
     if message.try(:chat).try(:type) == 'group'
+      logger.debug message.text.match?('/asd/')
         if message.text.match?('/asd/')
             unless Group.find_by(chat_id: message.chat.id)
               @group = Group.create(chat_id: message.chat.id, username: message.chat.username)
@@ -17,8 +19,9 @@ class MessageController < ApplicationController
               @sender = Sender.find_by(chat_id: message.from.id)
             end
             @asd = Asd.create(group: @group, sender: @sender, text: message.text)      
-
+logger.debug asd.to_yaml
             asdcount = @group.asds.count
+          logger.debug asdcount
             case asdcount
             when 1
                 addtext = 'Il primo asd. Benvenuto nella grande famiglia di asdbot'
