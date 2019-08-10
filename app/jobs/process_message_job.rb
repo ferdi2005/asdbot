@@ -1,7 +1,8 @@
 class ProcessMessageJob < ApplicationJob
   queue_as :default
 
-  def perform(message)
+  def perform(message)    
+    bot_api_key = '836213850:AAG-aBtJB8khJ53DNRlzORUVcFWOH5SOF9o'
     message = OpenStruct.new(JSON.parse(message))
     if message.try(:chat).try(:type) == 'group'
         if message.text.match?('/asd/')
