@@ -7,6 +7,7 @@ class MessageController < ApplicationController
       logger.debug '1ok'
         if message[:text].downcase =~ /asd/
           logger.debug '2ok'
+          asdcount = message[:text].downcase.scan(/asd/).count
             unless Group.find_by(chat_id: message[:chat][:id])
               @group = Group.create(chat_id: message[:chat][:id], username: message[:chat][:username])
             else
@@ -18,7 +19,8 @@ class MessageController < ApplicationController
             else
               @sender = Sender.find_by(chat_id: message[:from][:id])
             end
-            @asd = Asd.new(group: @group, sender: @sender, text: message[:text], update_id: params[:update_id])
+           asdcount.times do
+          @asd = Asd.new(group: @group, sender: @sender, text: message[:text], update_id: params[:update_id])
           if @asd.save
             asdcount = @group.asds.count
             case asdcount
@@ -43,6 +45,7 @@ class MessageController < ApplicationController
             position = Group.all.sort_by{|group| group.asds.count}.pluck(:id).reverse.find_index(@group.id) + 1 if Group.count > 0
             HTTParty.get(URI.escape("http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{@group.chat_id}&text=Il contasd conta ben #{asdcount}, asd. Sei il #{position}º gruppo per ASD inviati. #{addtext}"))
         end
+           end
        end
     end
 
