@@ -5,7 +5,8 @@ class MessageController < ApplicationController
       message = OpenStruct.new(params[:message].to_unsafe_h)
       logger.debug message.to_yaml
     if message.try(:chat).try(:type) == 'group'
-      logger.debug message.text.match?('/asd/')
+      logger.debug message.text
+      logger.debug message.text.match?(/asd/i)
         if message.text.match?('/asd/')
             unless Group.find_by(chat_id: message.chat.id)
               @group = Group.create(chat_id: message.chat.id, username: message.chat.username)
