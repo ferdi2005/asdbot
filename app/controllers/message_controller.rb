@@ -4,7 +4,9 @@ class MessageController < ApplicationController
     unless params[:message].blank?
       message = params[:message].to_unsafe_h
     if message[:chat][:type] == 'group' || message[:chat][:type] == 'supergroup'
+      logger.debug '1ok'
         if message[:text].match?('/asd/i')
+          logger.debug '2ok'
             unless Group.find_by(chat_id: message[:chat][:id])
               @group = Group.create(chat_id: message[:chat][:id], username: message[:chat][:username])
             else
