@@ -47,6 +47,9 @@ class MessageController < ApplicationController
         end
            end
        end
+    end 
+      
+      message = params[:message].to_unsafe_h
 
     if message[:text] == '/start' && (message[:chat][:type] == 'group' || message[:chat][:type] == 'supergroup')
       unless Group.find_by(chat_id: message[:chat][:id])
