@@ -42,7 +42,7 @@ class MessageController < ApplicationController
         end
     end
 
-    if message[:text] == '/start' && message[:chat][:type] == 'group' || message[:chat][:type] == 'supergroup'
+    if message[:text] == '/start' && (message[:chat][:type] == 'group' || message[:chat][:type] == 'supergroup')
       unless Group.find_by(chat_id: message[:chat][:id])
         @group = Group.create(chat_id: message[:chat][:id], username: message[:chat][:username])
       else
@@ -65,11 +65,11 @@ class MessageController < ApplicationController
         @sender = Sender.find_by(chat_id: message[:from][:id])
         position = 'primo in assoluto'
         position = Sender.all.sort_by{|sender| sender.asds.count}.pluck(:id).reverse.find_index(@sender.id) if Sender.count > 0
-        HTTParty.get("http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{message.chat.id}&text=Amico caro, la funzionalità grafico sta arrivando, arriverà quando questo numero (#{Group.count}) sarà uguale a 20, forse. Nel frattempo ti posso solo dire che hai al tuo attivo ben #{@sender.asds.count} asd e sei il #{position}º inviatore di ASD classifica globale!");
+        HTTParty.get("http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{message.chat.id}&text=Amico caro, la funzionalità grafico sta arrivando, arriva quando questo numero (#{Group.count}) uguale a 20, forse. Nel frattempo ti posso solo dire che hai al tuo attivo ben #{@sender.asds.count} asd e sei il #{position}º inviatore di ASD classifica globale!");
       end
     end
 
-    if message[:text] == '/grafico' && message[:chat][:type] == 'group' || message[:chat][:type] == 'supergroup'
+    if message[:text] == '/grafico' && (message[:chat][:type] == 'group' || message[:chat][:type] == 'supergroup')
       unless Group.find_by(chat_id: message[:chat][:id])
         @group = Group.create(chat_id: message[:chat][:id], username: message[:chat][:username])
         HTTParty.get("http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{message[:chat][:id]}&text=Non ho ancora un grafico per te, sei nuovo per me, non ti conosco. Invia qualche asd e prova questo comando.");
