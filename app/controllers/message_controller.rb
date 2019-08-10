@@ -18,7 +18,8 @@ class MessageController < ApplicationController
             else
               @sender = Sender.find_by(chat_id: message[:from][:id])
             end
-            @asd = Asd.create(group: @group, sender: @sender, text: message[:text])      
+            @asd = Asd.new(group: @group, sender: @sender, text: message[:text], update_id: params[:update_id])
+          if @asd.save
             asdcount = @group.asds.count
             case asdcount
             when 1
@@ -42,6 +43,7 @@ class MessageController < ApplicationController
             position = Group.all.sort_by{|group| group.asds.count}.pluck(:id).reverse.find_index(@group.id) if Group.count > 0
             HTTParty.get(URI.escape("http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{@group.chat_id}&text=Il contasd conta ben #{asdcount}, asd. Sei il #{position}º gruppo per ASD inviati. #{addtext}"))
         end
+       end
     end
 
     if message[:text] == '/start' && (message[:chat][:type] == 'group' || message[:chat][:type] == 'supergroup')
