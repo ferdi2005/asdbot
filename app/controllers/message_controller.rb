@@ -2,7 +2,7 @@ class MessageController < ApplicationController
   def message_process
     bot_api_key = '836213850:AAG-aBtJB8khJ53DNRlzORUVcFWOH5SOF9o'
     unless params[:message].blank?
-      message = params[:message]
+      message = params[:message].to_s
       message = OpenStruct.new(JSON.parse(message))
     if message.try(:chat).try(:type) == 'group'
         if message.text.match?('/asd/')
