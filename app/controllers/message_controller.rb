@@ -73,7 +73,7 @@ class MessageController < ApplicationController
       else
         @sender = Sender.find_by(chat_id: message[:from][:id])
         position = 'primo in assoluto'
-        position = Sender.all.sort_by{|sender| sender.asds.count}.pluck(:id).reverse.find_index(@sender.id) if Sender.count > 0
+        position = Sender.all.sort_by{|sender| sender.asds.count}.pluck(:id).reverse.find_index(@sender.id) + 1 if Sender.count > 0
         HTTParty.get(URI.escape("http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{message[:chat][:id]}&text=Amico caro, la funzionalità grafico sta arrivando, arriva quando questo numero (#{Group.count}) uguale a 20, forse. Nel frattempo ti posso solo dire che hai al tuo attivo ben #{@sender.asds.count} asd e sei il #{position}º inviatore di ASD classifica globale!"))
       end
     end
@@ -85,7 +85,7 @@ class MessageController < ApplicationController
       else
         @group = Group.find_by(chat_id: message[:chat][:id])
         position = 'primo in assoluto'
-        position = Group.all.sort_by{|group| group.asds.count}.pluck(:id).reverse.find_index(@group.id) if Group.count > 0
+        position = Group.all.sort_by{|group| group.asds.count}.pluck(:id).reverse.find_index(@group.id) + 1 if Group.count > 0
         HTTParty.get(URI.escape("http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{message[:chat][:id]}&text=Amico caro, la funzionalità grafico sta arrivando, arriverà quando questo numero (#{Group.count}) sarà uguale a 20, forse. Nel frattempo ti posso solo dire che hai al tuo attivo ben #{@group.asds.count} asd e sei il #{position}º gruppo!"))
       end
     end
