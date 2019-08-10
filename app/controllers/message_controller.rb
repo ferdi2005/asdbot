@@ -82,7 +82,8 @@ class MessageController < ApplicationController
         HTTParty.get(URI.escape("http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{message[:chat][:id]}&text=Amico caro, la funzionalità grafico sta arrivando, arriverà quando questo numero (#{Group.count}) sarà uguale a 20, forse. Nel frattempo ti posso solo dire che hai al tuo attivo ben #{@group.asds.count} asd e sei il #{position}º gruppo!"))
       end
     end
-    end
+  end
+end
   end
 
   def classifica
