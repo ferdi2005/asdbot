@@ -4,8 +4,8 @@ class MessageController < ApplicationController
     unless params[:message].blank?
       message = OpenStruct.new(params[:message].to_unsafe_h)
       logger.debug message.to_yaml
-      logger.debug message.try(:chat).try(:type)
-    if message.try(:chat).try(:type) == 'group'
+      logger.debug message.chat.type
+    if message.chat.type == 'group'
       logger.debug message.text
       logger.debug message.text.match?(/asd/i)
         if message.text.match?('/asd/')
