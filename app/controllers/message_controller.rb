@@ -1,11 +1,16 @@
 class MessageController < ActionController::API
   def message_process
     message = params[:message]
-    return if message.nil?
+    return if message.nil? || message[:chat].nil?
     unless message[:text].nil? 
       text = message[:text]
     else
       text = message[:caption]
+    end
+    if text.split('@').count == 2
+      if text.split('@')[1] == ENV['BOT_USERNAME']
+        text = text.split('@')[0]
+      end 
     end
     type = message[:chat][:type]
     id = message[:chat][:id]
@@ -13,47 +18,50 @@ class MessageController < ActionController::API
     update_id = params[:update_id]
     fromid = message[:from][:id]
     fromusername = message[:from][:username]
+
+    unless Group.find_by(chat_id: id)
+      @group = Group.create(chat_id: id, username: username)
+    else
+      @group = Group.find_by(chat_id: id)
+    end
+
+    unless @group.nil?
+      unless @group.welcomesent
+        Telegram.bot.send_message(chat_id: @group.chat_id, text: "Bella zio! Sono il bot asdoso creato da Ferdinando Traversa (ferdinando.me) da idea di Valerio Bozzolan, asd! Digita /grafico per ricevere il link ad un grafico, anche in privato per averne uno personale, asd o /classifca per scoprire cose interessanti. L'impostazione automaticaè che io invii il conto degli ASD alla fine della serata, così però ti perdi cose belle come la faccina dell'ASD di mezzanotte. Per modificare questa impostazione, basta digitare /nightsend ed invierò il messaggio di conteggio appena invii un asd.")
+        @group.update_attribute(:welcomesent, true)
+      end
+    end
+
+    unless Sender.find_by(chat_id: fromid)
+      @sender = Sender.create(chat_id: fromid, username: fromusername)
+    else
+      @sender = Sender.find_by(chat_id: fromid)
+    end
+
+    first_name = message[:from][:first_name]
+    last_name = message[:from][:last_name]
+    totalname = "#{first_name} #{last_name}"
+  
+    if @sender.name.nil? || @sender.name != totalname
+      @sender.update_attribute(:name, totalname)
+    end
+
+    if @sender.username != message[:from][:username]
+      @sender.update_attribute(:username, message[:from][:username])
+    end
+
+    title = message[:chat][:title]
+    if @group.title.nil? || @group.title != title
+      @group.update_attribute(:title, title)
+    end
+
+    if @group.username != message[:chat][:username]
+      @group.update_attribute(:username, message[:chat][:username])
+    end
+
     if type == 'group' || type == 'supergroup'
         if text =~ /asd/i
           multiplevalue = text.scan(/asd/i).count
-            unless Group.find_by(chat_id: id)
-              @group = Group.create(chat_id: id, username: username)
-            else
-              @group = Group.find_by(chat_id: id)
-            end
-            unless @group.welcomesent
-              Telegram.bot.send_message(chat_id: @group.chat_id, text: "Bella zio! Sono il bot asdoso creato da Ferdinando Traversa (ferdinando.me) da idea di Valerio Bozzolan, asd! Digita /grafico per ricevere il link ad un grafico, anche in privato per averne uno personale, asd o /classifca per scoprire cose interessanti. L'impostazione automaticaè che io invii il conto degli ASD alla fine della serata, così però ti perdi cose belle come la faccina dell'ASD di mezzanotte. Per modificare questa impostazione, basta digitare /nightsend ed invierò il messaggio di conteggio appena invii un asd.")
-              @group.update_attribute(:welcomesent, true)
-            end
-
-            unless Sender.find_by(chat_id: fromid)
-              @sender = Sender.create(chat_id: fromid, username: fromusername)
-            else
-              @sender = Sender.find_by(chat_id: fromid)
-            end
-
-            first_name = message[:from][:first_name]
-            last_name = message[:from][:last_name]
-            totalname = "#{first_name} #{last_name}"
-          
-            if @sender.name.nil? || @sender.name != totalname
-              @sender.update_attribute(:name, totalname)
-            end
-
-            if @sender.username != message[:from][:username]
-              @sender.update_attribute(:username, message[:from][:username])
-            end
-
-            title = message[:chat][:title]
-            if @group.title.nil? || @group.title != title
-              @group.update_attribute(:title, title)
-            end
-
-            if @group.username != message[:chat][:username]
-              @group.update_attribute(:username, message[:chat][:username])
-            end
-
-
             defmultiplevalue = multiplevalue - 1
           @asd = Asd.create(group: @group, sender: @sender, text: text, update_id: update_id, multiple_times: defmultiplevalue)
           defmultiplevalue.times do
