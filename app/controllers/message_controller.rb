@@ -86,24 +86,22 @@ class MessageController < ApplicationController
         @sender = Sender.find_by(chat_id: message[:from][:id])
         position = 'primo in assoluto'
         position = Sender.all.sort_by{|sender| sender.asds.count}.pluck(:id).reverse.find_index(@sender.id) + 1 if Sender.count > 0
-        HTTParty.get(CGI.escape("http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{message[:chat][:id]}&text=Amico caro, la funzionalità grafico sta arrivando, arriva quando questo numero (#{Group.count}) uguale a 20, forse. Nel frattempo ti posso solo dire che hai al tuo attivo ben #{@sender.asds.count} asd e sei il #{position}º inviatore di ASD classifica globale!"))
+        HTTParty.get(CGI.escape("http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{message[:chat][:id]}&text=Guarda il tuo grafico personalizzato per il gruppo su #{ENV['DOMAIN']}/grafico?s=#{@sender.chat_id}"))
       end
     end
       
     if message[:text] == '/grafico' && (message[:chat][:type] == 'group' || message[:chat][:type] == 'supergroup')
       unless Group.find_by(chat_id: message[:chat][:id])
-        @group = Group.create(chat_id: message[:chat][:id], username: message[:chat][:username])
         HTTParty.get(CGI.escape("http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{message[:chat][:id]}&text=Non ho ancora un grafico per te, sei nuovo per me, non ti conosco. Invia qualche asd e prova questo comando."))
       else
         @group = Group.find_by(chat_id: message[:chat][:id])
         position = Group.all.sort_by{|group| group.asds.count}.pluck(:id).reverse.find_index(@group.id) + 1
-        HTTParty.get(CGI.escape("http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{message[:chat][:id]}&text=Amico caro, la funzionalità grafico sta arrivando, arriverà quando questo numero (#{Group.count}) sarà uguale a 20, forse. Nel frattempo ti posso solo dire che hai al tuo attivo ben #{@group.asds.count} asd e sei il #{position}º gruppo!"))
+        HTTParty.get(CGI.escape("http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{message[:chat][:id]}&text=Guarda il tuo grafico personalizzato per il gruppo su #{ENV['DOMAIN']}/grafico?g=#{@group.chat_id}"))
       end
     end
 
     if message[:text] == '/nightsend' && (message[:chat][:type] == 'group' || message[:chat][:type] == 'supergroup')
       unless Group.find_by(chat_id: message[:chat][:id])
-        @group = Group.create(chat_id: message[:chat][:id], username: message[:chat][:username])
         HTTParty.get(CGI.escape("http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{message[:chat][:id]}&text=Ok, l'impostazione predefinita è che l'invio del conto degli asd avvenga a mezzanotte, ma con questo comando la modifico. Procedo, asd."))
         @group.update_attribute(:nightsend, false)
       else
@@ -122,6 +120,14 @@ class MessageController < ApplicationController
   def classifica
     @groups = Group.all.sort_by{|sender| sender.asds.count}.reverse
     @senders = Sender.all.sort_by{|sender| sender.asds.count}.reverse
+  end
+
+  def grafico
+    if !params[:s].nil?
+      @sender = Sender.find_by(chat_id: params[:s])
+    elsif !params[:g].nil?
+      @group = Group.find_by(chat_id: params[:g])
+    end
   end
 
   def home
