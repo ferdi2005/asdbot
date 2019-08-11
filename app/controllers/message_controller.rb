@@ -3,7 +3,6 @@ class MessageController < ActionController::API
     bot_api_key = ENV['BOT_API_KEY']
     client = HTTPClient
     message = params[:message].to_unsafe_h
-    return if message.nil? || message[:chat].nil?
     unless message[:text].nil? 
       text = message[:text]
     else
