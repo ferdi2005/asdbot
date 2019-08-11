@@ -5,7 +5,7 @@ class MessageController < ActionController::API
     return false if params[:message].blank?
     logger.debug params[:message]
     message = params[:message].to_unsafe_h
-    logger.debug params[:chat][:type]
+    logger.debug message[:chat][:type]
     logger.debug message.to_yaml
     logger.debug message[:text]
     if message[:chat][:type] == 'group' || message[:chat][:type] == 'supergroup'
