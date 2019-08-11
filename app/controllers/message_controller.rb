@@ -1,7 +1,7 @@
 class MessageController < ActionController::API
   def message_process
-    bot_api_key = ENV['BOT_API_KEY']
     message = params[:message]
+    return if message.nil?
     unless message[:text].nil? 
       text = message[:text]
     else
@@ -31,6 +31,29 @@ class MessageController < ActionController::API
             else
               @sender = Sender.find_by(chat_id: fromid)
             end
+
+            first_name = message[:from][:first_name]
+            last_name = message[:from][:last_name]
+            totalname = "#{first_name} #{last_name}"
+          
+            if @sender.name.nil? || @sender.name != totalname
+              @sender.update_attribute(:name, totalname)
+            end
+
+            if @sender.username != message[:from][:username]
+              @sender.update_attribute(:username, message[:from][:username])
+            end
+
+            title = message[:chat][:title]
+            if @group.title.nil? || @group.title != title
+              @group.update_attribute(:title, title)
+            end
+
+            if @group.username != message[:chat][:username]
+              @group.update_attribute(:username, message[:chat][:username])
+            end
+
+
             defmultiplevalue = multiplevalue - 1
           @asd = Asd.create(group: @group, sender: @sender, text: text, update_id: update_id, multiple_times: defmultiplevalue)
           defmultiplevalue.times do
@@ -94,7 +117,7 @@ class MessageController < ActionController::API
       else
         @sender = Sender.find_by(chat_id: fromid)
         position = Sender.all.sort_by{|sender| sender.asds.count}.pluck(:id).reverse.find_index(@sender.id) + 1 if Sender.count > 0
-        Telegram.bot.send_message(chat_id: id, text: "Guarda il tuo grafico personalizzato per il gruppo su #{ENV['DOMAIN']}/grafico?s=#{@sender.chat_id}")
+        Telegram.bot.send_message(chat_id: id, text: "Guarda il tuo grafico personalizzato per il gruppo su #{ENV['DOMAIN']}/grafico?s=#{@sender.chat_id} Inoltre sappi che sei il #{position}º inviatore di asd nel mondo!")
       end
     end
       
@@ -103,7 +126,6 @@ class MessageController < ActionController::API
         Telegram.bot.send_message(chat_id: id, text: 'Non ho ancora un grafico per te, sei nuovo per me, non ti conosco. Invia qualche asd e prova questo comando.')
       else
         @group = Group.find_by(chat_id: id)
-        position = Group.all.sort_by{|group| group.asds.count}.pluck(:id).reverse.find_index(@group.id) + 1
         Telegram.bot.send_message(chat_id: id, text: "Guarda il tuo grafico personalizzato per il gruppo su #{ENV['DOMAIN']}/grafico?g=#{@group.chat_id}")
       end
     end
