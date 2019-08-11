@@ -1,10 +1,11 @@
-class MessageController < ActionController::API
+class MessageController < ApplicationController
   def message_process
     bot_api_key = ENV['BOT_API_KEY']
     client = HTTPClient
     return false if params[:message].blank?
     message = params[:message].to_unsafe_h
-    logger.debug message
+    logger.debug 'NOW MESSAGE'
+    logger.debug message.to_yaml
     text = message[:text]
     if message[:chat][:type] == 'group' || message[:chat][:type] == 'supergroup'
         if text =~ /asd/i
