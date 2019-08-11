@@ -11,7 +11,7 @@ class MessageController < ApplicationController
     end
     type = message[:chat][:type]
     id = message[:chat][:id]
-    byebug
+    
     username = message[:chat][:username]
     update_id = params[:update_id]
     fromid = message[:from][:id]
