@@ -1,24 +1,7 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Crea un bellissimo bot che conta gli ASD.
 
-Things you may want to cover:
+ENV variabili richieste: DOMAIN (abbastanza ovvio, il dominio) e BOT_API_KEY, la vostra api key telegram per il bot.
 
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+Inoltre, amici, vi ricordo che dovete avere un certificato SSL ed impostare il webhook telegram.

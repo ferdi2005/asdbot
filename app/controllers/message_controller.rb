@@ -1,6 +1,6 @@
 class MessageController < ApplicationController
   def message_process
-    bot_api_key = '836213850:AAG-aBtJB8khJ53DNRlzORUVcFWOH5SOF9o'
+    bot_api_key = ENV['BOT_API_KEY']
     return false if params[:message].blank?
     message = params[:message].to_unsafe_h
     if message[:chat][:type] == 'group' || message[:chat][:type] == 'supergroup'
