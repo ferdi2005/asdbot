@@ -2,7 +2,7 @@ class MessageController < ActionController::API
   def message_process
     bot_api_key = ENV['BOT_API_KEY']
     client = HTTPClient
-    message = params[:message].to_unsafe_h
+    message = params[:message].to_unsafe_h.to_h
     unless message[:text].nil? 
       text = message[:text]
     else
@@ -10,11 +10,12 @@ class MessageController < ActionController::API
     end
     type = message[:chat].to_h[:type]
     id = message[:chat].to_h[:id]
-    
     username = message[:chat].to_h[:username]
     update_id = params[:update_id]
     fromid = message[:from].to_h[:id]
     fromusername = message[:from].to_h[:username]
+    logger.debug message.to_yaml
+    logger.debug text
     if type == 'group' || type == 'supergroup'
         if text =~ /asd/i
           multiplevalue = text.scan(/asd/i).count
