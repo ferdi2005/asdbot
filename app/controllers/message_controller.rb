@@ -119,6 +119,8 @@ class MessageController < ActionController::API
         end
       end
     end
-    render status: 200
+    respond_with do |format|
+      format.html { render 'foo' }
+    end    
   end
 end
