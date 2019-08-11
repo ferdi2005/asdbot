@@ -17,7 +17,7 @@ class MessageController < ActionController::API
               @group = Group.find_by(chat_id: message[:chat][:id])
             end
             unless @group.welcomesent
-              client.get "http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{@group.chat_id}&text=Bella zio! Sono il bot asdoso creato da Ferdinando Traversa (ferdinando.me) da idea di Valerio Bozzolan, asd! Digita /grafico per ricevere il link ad un grafico, anche in privato per averne uno personale, asd o /classifca per scoprire cose interessanti. L'impostazione automatica è che io invii il conto degli ASD alla fine della serata, così però ti perdi cose belle come la faccina dell'ASD di mezzanotte. Per modificare questa impostazione, basta digitare /nightsend ed invierò il messaggio di conteggio appena invii un asd"
+              client.get "http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{@group.chat_id}&text=Bella zio! Sono il bot asdoso creato da Ferdinando Traversa (ferdinando.me) da idea di Valerio Bozzolan, asd! Digita /grafico per ricevere il link ad un grafico, anche in privato per averne uno personale, asd o /classifca per scoprire cose interessanti. L'impostazione automatica %C3%A8 che io invii il conto degli ASD alla fine della serata, cos%C3%AC per%C3%B2 ti perdi cose belle come la faccina dell'ASD di mezzanotte. Per modificare questa impostazione, basta digitare /nightsend ed invier%C3%B2 il messaggio di conteggio appena invii un asd"
               @group.update_attribute(:welcomesent, true)
             end
 
@@ -44,22 +44,22 @@ class MessageController < ActionController::API
                 addtext = 'IL CENTESIMO ASD, ASD! COMPLIMENTS CONGRATULATIONS AUF WIDERSHEN'
                 SpecialEvent.create(text: addtext, group: @group, asd: @asd)
             when 1000
-                addtext = '1000 asd, wow! Questo gruppo, così asdoso, asd'
+                addtext = '1000 asd, wow! Questo gruppo, cos%C3%AC asdoso, asd'
                 SpecialEvent.create(text: addtext, group: @group, asd: @asd)
             when 10000
-                addtext = '10000 è un record mondiale, asd'
+                addtext = '10000 %C3%A8 un record mondiale, asd'
                 SpecialEvent.create(text: addtext, group: @group, asd: @asd)
             end
             
           unless @group.nightsend
             if SpecialEvent.find_by(asd: @asd)
-              HTTParty.get(CGI.escape("http://api.telegram.org/bot#{bot_api_key}/sendPhoto?chat_id=#{@group.chat_id}&photo=http://www.lanciano.it/faccine/asdone.gif&caption=Così asdoso, asd. #{SpecialEvent.find_by(asd: @asd).text}"))
+              client.get "http://api.telegram.org/bot#{bot_api_key}/sendPhoto?chat_id=#{@group.chat_id}&photo=http://www.lanciano.it/faccine/asdone.gif&caption=Cos%C3%AC asdoso, asd. #{SpecialEvent.find_by(asd: @asd).text}"
               SpecialEvent.find_by(asd: @asd).destroy
             end
             position = Group.all.sort_by{|group| group.asds.count}.pluck(:id).reverse.find_index(@group.id) + 1
-              HTTParty.get(CGI.escape("http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{@group.chat_id}&text=Il contasd conta ben #{asdcount} (+ #{defmultiplevalue}), asd. Sei il #{position}º gruppo per ASD inviati."))
+             client.get "http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{@group.chat_id}&text=Il contasd conta ben #{asdcount} (+ #{defmultiplevalue}), asd. Sei il #{position}%C2%BA gruppo per ASD inviati."
             if @asd.created_at.strftime('%H:%M') == '00:00'
-              HTTParty.get(CGI.escape("http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{@group.chat_id}&text=Asd di mezzanotte 🌚"))
+              client.get "http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{@group.chat_id}&text=Asd di mezzanotte %F0%9F%8C%9A"
             end
           end
         end
@@ -71,50 +71,50 @@ class MessageController < ActionController::API
       else
         @group = Group.find_by(chat_id: message[:chat][:id])
       end
-      client.get "http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{@group.chat_id}&text=Bella zio! Sono il bot asdoso creato da Ferdinando Traversa (ferdinando.me) da idea di Valerio Bozzolan, asd! Digita /grafico per ricevere il link ad un grafico, anche in privato per averne uno personale, asd o /classifca per scoprire cose interessanti. L'impostazione automatica è che io invii il conto degli ASD alla fine della serata, così però ti perdi cose belle come la faccina dell'ASD di mezzanotte. Per modificare questa impostazione, basta digitare /nightsend ed invierò il messaggio di conteggio appena invii un asd"
+      client.get "http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{@group.chat_id}&text=Bella zio! Sono il bot asdoso creato da Ferdinando Traversa (ferdinando.me) da idea di Valerio Bozzolan, asd! Digita /grafico per ricevere il link ad un grafico, anche in privato per averne uno personale, asd o /classifca per scoprire cose interessanti. L'impostazione automatica %C3%A8 che io invii il conto degli ASD alla fine della serata, cos%C3%AC per%C3%B2 ti perdi cose belle come la faccina dell'ASD di mezzanotte. Per modificare questa impostazione, basta digitare /nightsend ed invier%C3%B2 il messaggio di conteggio appena invii un asd"
       @group.update_attribute(:welcomesent, true)
     end
 
     if message[:text] == '/classifica'
-      HTTParty.get(CGI.escape("http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{message[:chat][:id]}&text=Vai su #{ENV['DOMAIN']}/classifica per vedere la classifica. Ci sono #{Group.count} che usano questo bot, comunque."))
+      client.get "http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{message[:chat][:id]}&text=Vai su #{ENV['DOMAIN']}/classifica per vedere la classifica. Ci sono #{Group.count} che usano questo bot, comunque."
     end 
     
     if message[:text] == '/start' && message[:chat][:type] == 'private'
-      client.get "http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{message[:chat][:id]}&text=Bella zio! Sono il bot asdoso creato da Ferdinando Traversa (ferdinando.me @ferdi2005) da idea di Valerio Bozzolan, asd! Aggiungimi ad un bel gruppo e conterò gli asd, altrimenti digita /grafico per il tuo grafico personal personal."
+      client.get "http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{message[:chat][:id]}&text=Bella zio! Sono il bot asdoso creato da Ferdinando Traversa (ferdinando.me @ferdi2005) da idea di Valerio Bozzolan, asd! Aggiungimi ad un bel gruppo e conter%C3%B2 gli asd, altrimenti digita /grafico per il tuo grafico personal personal."
     end
 
     if message[:text] == '/grafico' && message[:chat][:type] == 'private'
       unless Sender.find_by(chat_id: message[:from][:id])
-        HTTParty.get(CGI.escape("http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{message[:chat][:id]}&text=Non ho ancora un grafico per te, sei nuovo per me, non ti conosco. Iscriviti in qualche gruppo con questo bot e manda asd a ripetizione, poi torna da me."))
+        client.get "http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{message[:chat][:id]}&text=Non ho ancora un grafico per te, sei nuovo per me, non ti conosco. Iscriviti in qualche gruppo con questo bot e manda asd a ripetizione, poi torna da me."
       else
         @sender = Sender.find_by(chat_id: message[:from][:id])
         position = 'primo in assoluto'
         position = Sender.all.sort_by{|sender| sender.asds.count}.pluck(:id).reverse.find_index(@sender.id) + 1 if Sender.count > 0
-        HTTParty.get(CGI.escape("http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{message[:chat][:id]}&text=Guarda il tuo grafico personalizzato per il gruppo su #{ENV['DOMAIN']}/grafico?s=#{@sender.chat_id}"))
+        client.get "http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{message[:chat][:id]}&text=Guarda il tuo grafico personalizzato per il gruppo su #{ENV['DOMAIN']}/grafico?s=#{@sender.chat_id}"
       end
     end
       
     if message[:text] == '/grafico' && (message[:chat][:type] == 'group' || message[:chat][:type] == 'supergroup')
       unless Group.find_by(chat_id: message[:chat][:id])
-        HTTParty.get(CGI.escape("http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{message[:chat][:id]}&text=Non ho ancora un grafico per te, sei nuovo per me, non ti conosco. Invia qualche asd e prova questo comando."))
+        client.get "http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{message[:chat][:id]}&text=Non ho ancora un grafico per te, sei nuovo per me, non ti conosco. Invia qualche asd e prova questo comando."
       else
         @group = Group.find_by(chat_id: message[:chat][:id])
         position = Group.all.sort_by{|group| group.asds.count}.pluck(:id).reverse.find_index(@group.id) + 1
-        HTTParty.get(CGI.escape("http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{message[:chat][:id]}&text=Guarda il tuo grafico personalizzato per il gruppo su #{ENV['DOMAIN']}/grafico?g=#{@group.chat_id}"))
+        client.get "http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{message[:chat][:id]}&text=Guarda il tuo grafico personalizzato per il gruppo su #{ENV['DOMAIN']}/grafico?g=#{@group.chat_id}"
       end
     end
 
     if message[:text] == '/nightsend' && (message[:chat][:type] == 'group' || message[:chat][:type] == 'supergroup')
       unless Group.find_by(chat_id: message[:chat][:id])
-        HTTParty.get(CGI.escape("http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{message[:chat][:id]}&text=Ok, l'impostazione predefinita è che l'invio del conto degli asd avvenga a mezzanotte, ma con questo comando la modifico. Procedo, asd."))
+        client.get "http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{message[:chat][:id]}&text=Ok, l'impostazione predefinita %C3%A8 che l'invio del conto degli asd avvenga a mezzanotte, ma con questo comando la modifico. Procedo, asd."
         @group.update_attribute(:nightsend, false)
       else
         @group = Group.find_by(chat_id: message[:chat][:id])
         if @group.nightsend
-          HTTParty.get(CGI.escape("http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{message[:chat][:id]}&text=Ok, l'impostazione predefinita è che l'invio del conto degli asd avvenga a mezzanotte, ma con questo comando la modifico. Procedo, ora avrai un messaggio ogni asd, asd."))
+          client.get "http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{message[:chat][:id]}&text=Ok, l'impostazione predefinita %C3%A8 che l'invio del conto degli asd avvenga a mezzanotte, ma con questo comando la modifico. Procedo, ora avrai un messaggio ogni asd, asd."
           @group.update_attribute(:nightsend, false)
         else
-          HTTParty.get(CGI.escape("http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{message[:chat][:id]}&text=Sei una persona triste, asd. Vuoi che il conteggio venga inviato a mezzanotte. Bozzolan dice sì, Ferdi dice no. Tu dici sì, allora conteggio a mezzanotte sia, asd"))
+          client.get "http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{message[:chat][:id]}&text=Sei una persona triste, asd. Vuoi che il conteggio venga inviato a mezzanotte. Bozzolan dice s%C3%AC, Ferdi dice no. Tu dici s%C3%AC, allora conteggio a mezzanotte sia, asd"
           @group.update_attribute(:nightsend, true)
         end
       end
