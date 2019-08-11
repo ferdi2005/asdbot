@@ -33,7 +33,7 @@ class MessageController < ActionController::API
               @sender = Sender.find_by(chat_id: fromid)
             end
             defmultiplevalue = multiplevalue - 1
-          @asd = Asd.new(group: @group, sender: @sender, text: text, update_id: update_id, multiple_times: defmultiplevalue)
+          @asd = Asd.create(group: @group, sender: @sender, text: text, update_id: update_id, multiple_times: defmultiplevalue)
           defmultiplevalue.times do
             Asd.create(group: @group, sender: @sender, text: text)
           end
