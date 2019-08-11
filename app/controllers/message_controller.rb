@@ -8,13 +8,13 @@ class MessageController < ActionController::API
     else
       text = message[:caption]
     end
-    type = message[:chat][:type]
-    id = message[:chat][:id]
+    type = message[:chat].to_h[:type]
+    id = message[:chat].to_h[:id]
     
-    username = message[:chat][:username]
+    username = message[:chat].to_h[:username]
     update_id = params[:update_id]
-    fromid = message[:from][:id]
-    fromusername = message[:from][:username]
+    fromid = message[:from].to_h[:id]
+    fromusername = message[:from].to_h[:username]
     if type == 'group' || type == 'supergroup'
         if text =~ /asd/i
           multiplevalue = text.scan(/asd/i).count
