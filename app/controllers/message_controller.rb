@@ -6,29 +6,39 @@ class MessageController < ApplicationController
     message = params[:message].to_unsafe_h
     logger.debug 'NOW MESSAGE'
     logger.debug message.to_yaml
-    text = message[:text]
-    if message[:chat][:type] == 'group' || message[:chat][:type] == 'supergroup'
+    unless message[:text].nil? 
+      text = message[:text]
+    else
+      text = message[:caption]
+    end
+    type = message[:chat][:type]
+    id = message[:chat][:id]
+    username = message[:chat][:username]
+    update_id = params[:update_id]
+    fromid = message[:from][:id]
+    fromusername = message[:from][:username]
+    if type == 'group' || type == 'supergroup'
         if text =~ /asd/i
           multiplevalue = text.scan(/asd/i).count
-            unless Group.find_by(chat_id: message[:chat][:id])
-              @group = Group.create(chat_id: message[:chat][:id], username: message[:chat][:username])
+            unless Group.find_by(chat_id: id)
+              @group = Group.create(chat_id: id, username: username)
             else
-              @group = Group.find_by(chat_id: message[:chat][:id])
+              @group = Group.find_by(chat_id: id)
             end
             unless @group.welcomesent
               client.get "http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{@group.chat_id}&text=Bella zio! Sono il bot asdoso creato da Ferdinando Traversa (ferdinando.me) da idea di Valerio Bozzolan, asd! Digita /grafico per ricevere il link ad un grafico, anche in privato per averne uno personale, asd o /classifca per scoprire cose interessanti. L'impostazione automatica %C3%A8 che io invii il conto degli ASD alla fine della serata, cos%C3%AC per%C3%B2 ti perdi cose belle come la faccina dell'ASD di mezzanotte. Per modificare questa impostazione, basta digitare /nightsend ed invier%C3%B2 il messaggio di conteggio appena invii un asd"
               @group.update_attribute(:welcomesent, true)
             end
 
-            unless Sender.find_by(chat_id: message[:from][:id])
-              @sender = Sender.create(chat_id: message[:from][:id], username: message[:from][:username])
+            unless Sender.find_by(chat_id: id)
+              @sender = Sender.create(chat_id: id, username: fromusername)
             else
-              @sender = Sender.find_by(chat_id: message[:from][:id])
+              @sender = Sender.find_by(chat_id: id)
             end
             defmultiplevalue = multiplevalue - 1
-          @asd = Asd.new(group: @group, sender: @sender, text: message[:text], update_id: params[:update_id], multiple_times: defmultiplevalue)
+          @asd = Asd.new(group: @group, sender: @sender, text: text, update_id: update_id, multiple_times: defmultiplevalue)
           defmultiplevalue.times do
-            Asd.create(group: @group, sender: @sender, text: message[:text])
+            Asd.create(group: @group, sender: @sender, text: text)
           end
 
             asdcount = @group.asds.count
@@ -64,56 +74,56 @@ class MessageController < ApplicationController
         end
     end 
       
-    if message[:text] == '/start' && (message[:chat][:type] == 'group' || message[:chat][:type] == 'supergroup')
-      unless Group.find_by(chat_id: message[:chat][:id])
-        @group = Group.create(chat_id: message[:chat][:id], username: message[:chat][:username])
+    if text == '/start' && (type == 'group' || type == 'supergroup')
+      unless Group.find_by(chat_id: id)
+        @group = Group.create(chat_id: id, username: username)
       else
-        @group = Group.find_by(chat_id: message[:chat][:id])
+        @group = Group.find_by(chat_id: id)
       end
       client.get "http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{@group.chat_id}&text=Bella zio! Sono il bot asdoso creato da Ferdinando Traversa (ferdinando.me) da idea di Valerio Bozzolan, asd! Digita /grafico per ricevere il link ad un grafico, anche in privato per averne uno personale, asd o /classifca per scoprire cose interessanti. L'impostazione automatica %C3%A8 che io invii il conto degli ASD alla fine della serata, cos%C3%AC per%C3%B2 ti perdi cose belle come la faccina dell'ASD di mezzanotte. Per modificare questa impostazione, basta digitare /nightsend ed invier%C3%B2 il messaggio di conteggio appena invii un asd"
       @group.update_attribute(:welcomesent, true)
     end
 
-    if message[:text] == '/classifica'
-      client.get "http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{message[:chat][:id]}&text=Vai su #{ENV['DOMAIN']}/classifica per vedere la classifica. Ci sono #{Group.count} che usano questo bot, comunque."
+    if text == '/classifica'
+      client.get "http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{id}&text=Vai su #{ENV['DOMAIN']}/classifica per vedere la classifica. Ci sono #{Group.count} che usano questo bot, comunque."
     end 
     
-    if message[:text] == '/start' && message[:chat][:type] == 'private'
-      client.get "http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{message[:chat][:id]}&text=Bella zio! Sono il bot asdoso creato da Ferdinando Traversa (ferdinando.me @ferdi2005) da idea di Valerio Bozzolan, asd! Aggiungimi ad un bel gruppo e conter%C3%B2 gli asd, altrimenti digita /grafico per il tuo grafico personal personal."
+    if text == '/start' && type == 'private'
+      client.get "http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{id}&text=Bella zio! Sono il bot asdoso creato da Ferdinando Traversa (ferdinando.me @ferdi2005) da idea di Valerio Bozzolan, asd! Aggiungimi ad un bel gruppo e conter%C3%B2 gli asd, altrimenti digita /grafico per il tuo grafico personal personal."
     end
 
-    if message[:text] == '/grafico' && message[:chat][:type] == 'private'
-      unless Sender.find_by(chat_id: message[:from][:id])
-        client.get "http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{message[:chat][:id]}&text=Non ho ancora un grafico per te, sei nuovo per me, non ti conosco. Iscriviti in qualche gruppo con questo bot e manda asd a ripetizione, poi torna da me."
+    if text == '/grafico' && type == 'private'
+      unless Sender.find_by(chat_id: id)
+        client.get "http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{id}&text=Non ho ancora un grafico per te, sei nuovo per me, non ti conosco. Iscriviti in qualche gruppo con questo bot e manda asd a ripetizione, poi torna da me."
       else
-        @sender = Sender.find_by(chat_id: message[:from][:id])
+        @sender = Sender.find_by(chat_id: id)
         position = 'primo in assoluto'
         position = Sender.all.sort_by{|sender| sender.asds.count}.pluck(:id).reverse.find_index(@sender.id) + 1 if Sender.count > 0
-        client.get "http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{message[:chat][:id]}&text=Guarda il tuo grafico personalizzato per il gruppo su #{ENV['DOMAIN']}/grafico?s=#{@sender.chat_id}"
+        client.get "http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{id}&text=Guarda il tuo grafico personalizzato per il gruppo su #{ENV['DOMAIN']}/grafico?s=#{@sender.chat_id}"
       end
     end
       
-    if message[:text] == '/grafico' && (message[:chat][:type] == 'group' || message[:chat][:type] == 'supergroup')
-      unless Group.find_by(chat_id: message[:chat][:id])
-        client.get "http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{message[:chat][:id]}&text=Non ho ancora un grafico per te, sei nuovo per me, non ti conosco. Invia qualche asd e prova questo comando."
+    if text == '/grafico' && (type == 'group' || type == 'supergroup')
+      unless Group.find_by(chat_id: id)
+        client.get "http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{id}&text=Non ho ancora un grafico per te, sei nuovo per me, non ti conosco. Invia qualche asd e prova questo comando."
       else
-        @group = Group.find_by(chat_id: message[:chat][:id])
+        @group = Group.find_by(chat_id: id)
         position = Group.all.sort_by{|group| group.asds.count}.pluck(:id).reverse.find_index(@group.id) + 1
-        client.get "http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{message[:chat][:id]}&text=Guarda il tuo grafico personalizzato per il gruppo su #{ENV['DOMAIN']}/grafico?g=#{@group.chat_id}"
+        client.get "http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{id}&text=Guarda il tuo grafico personalizzato per il gruppo su #{ENV['DOMAIN']}/grafico?g=#{@group.chat_id}"
       end
     end
 
-    if message[:text] == '/nightsend' && (message[:chat][:type] == 'group' || message[:chat][:type] == 'supergroup')
-      unless Group.find_by(chat_id: message[:chat][:id])
-        client.get "http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{message[:chat][:id]}&text=Ok, l'impostazione predefinita %C3%A8 che l'invio del conto degli asd avvenga a mezzanotte, ma con questo comando la modifico. Procedo, asd."
+    if text == '/nightsend' && (type == 'group' || type == 'supergroup')
+      unless Group.find_by(chat_id: id)
+        client.get "http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{id}&text=Ok, l'impostazione predefinita %C3%A8 che l'invio del conto degli asd avvenga a mezzanotte, ma con questo comando la modifico. Procedo, asd."
         @group.update_attribute(:nightsend, false)
       else
-        @group = Group.find_by(chat_id: message[:chat][:id])
+        @group = Group.find_by(chat_id: id)
         if @group.nightsend
-          client.get "http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{message[:chat][:id]}&text=Ok, l'impostazione predefinita %C3%A8 che l'invio del conto degli asd avvenga a mezzanotte, ma con questo comando la modifico. Procedo, ora avrai un messaggio ogni asd, asd."
+          client.get "http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{id}&text=Ok, l'impostazione predefinita %C3%A8 che l'invio del conto degli asd avvenga a mezzanotte, ma con questo comando la modifico. Procedo, ora avrai un messaggio ogni asd, asd."
           @group.update_attribute(:nightsend, false)
         else
-          client.get "http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{message[:chat][:id]}&text=Sei una persona triste, asd. Vuoi che il conteggio venga inviato a mezzanotte. Bozzolan dice s%C3%AC, Ferdi dice no. Tu dici s%C3%AC, allora conteggio a mezzanotte sia, asd"
+          client.get "http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{id}&text=Sei una persona triste, asd. Vuoi che il conteggio venga inviato a mezzanotte. Bozzolan dice s%C3%AC, Ferdi dice no. Tu dici s%C3%AC, allora conteggio a mezzanotte sia, asd"
           @group.update_attribute(:nightsend, true)
         end
       end
