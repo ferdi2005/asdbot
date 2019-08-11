@@ -9,8 +9,8 @@ class MessageController < ActionController::API
     logger.debug message.to_yaml
     logger.debug message[:text]
     if message[:chat][:type] == 'group' || message[:chat][:type] == 'supergroup'
-        if message[:text].downcase =~ /asd/
-          multiplevalue = message[:text].downcase.scan(/asd/).count
+        if message[:text] =~ /asd/i
+          multiplevalue = message[:text].scan(/asd/i).count
             unless Group.find_by(chat_id: message[:chat][:id])
               @group = Group.create(chat_id: message[:chat][:id], username: message[:chat][:username])
             else
