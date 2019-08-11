@@ -49,6 +49,9 @@ GEM
     byebug (11.0.1)
     concurrent-ruby (1.1.5)
     crass (1.0.4)
+    crono (1.1.2)
+      activerecord (>= 4.0)
+      activesupport (>= 4.0)
     erubi (1.8.0)
     ffi (1.11.1)
     globalid (0.4.2)
@@ -142,6 +145,7 @@ DEPENDENCIES
   bootsnap (>= 1.1.0)
   bundler (= 2.0.2)
   byebug
+  crono
   httparty
   listen (>= 3.0.5, < 3.2)
   pg

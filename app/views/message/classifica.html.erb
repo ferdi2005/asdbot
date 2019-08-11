@@ -1,14 +1,21 @@
+<style>
+body { 
+  font-family: sans-serif;
+}
+</style>
 <h1>LA CLASSIFICA SOMMA</h1>
 <h2>GRUPPI</h2>
 <ol>
-<%= @groups.each do |group| %>
+<% @groups.each do |group| %>
   <li><a href="https://t.me/<%= group.username %>"><%= group.username %></a> --> <%= group.asds.count %> asd</li>
 <% end %>
-
+</ol>
+<br/>
 <h2>UTENTI</h2>
 <ol>
-<%= @senders.each do |group| %>
+<% @senders.each do |group| %>
   <li><a href="https://t.me/<%= group.username %>"><%= group.username %></a> --> <%= group.asds.count %> asd</li>
 <% end %>
-
-Sviluppato con cuore da Ferdinando Traversa - <a href="https://ferdinando.me">Blog</a> - <a href="https://github.com/ferdi2005">Github</a> - Basato su Rails 5
+</ol>
+<br/>
+Sviluppato con cuore da Ferdinando Traversa - <a href="https://ferdinando.me">Blog</a> - <a href="https://github.com/ferdi2005">Github</a> - Basato su <a href="https://rubyonrails.org">Rails 5</a>

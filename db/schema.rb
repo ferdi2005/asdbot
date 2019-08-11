@@ -10,23 +10,41 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_10_152822) do
+ActiveRecord::Schema.define(version: 2019_08_11_114154) do
+
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
 
   create_table "asds", force: :cascade do |t|
-    t.integer "group_id"
-    t.integer "sender_id"
+    t.bigint "group_id"
+    t.bigint "sender_id"
+    t.integer "update_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "text"
+    t.boolean "nightsend"
+    t.integer "multiple_times"
     t.index ["group_id"], name: "index_asds_on_group_id"
     t.index ["sender_id"], name: "index_asds_on_sender_id"
   end
 
+  create_table "crono_jobs", force: :cascade do |t|
+    t.string "job_id", null: false
+    t.text "log"
+    t.datetime "last_performed_at"
+    t.boolean "healthy"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["job_id"], name: "index_crono_jobs_on_job_id", unique: true
+  end
+
   create_table "groups", force: :cascade do |t|
-    t.integer "chat_id", limit: 18
+    t.bigint "chat_id"
     t.string "username"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "welcomesent", default: false
+    t.boolean "nightsend"
   end
 
   create_table "senders", force: :cascade do |t|
@@ -36,4 +54,18 @@ ActiveRecord::Schema.define(version: 2019_08_10_152822) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "special_events", force: :cascade do |t|
+    t.bigint "group_id"
+    t.string "text"
+    t.bigint "asd_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["asd_id"], name: "index_special_events_on_asd_id"
+    t.index ["group_id"], name: "index_special_events_on_group_id"
+  end
+
+  add_foreign_key "asds", "groups"
+  add_foreign_key "asds", "senders"
+  add_foreign_key "special_events", "asds"
+  add_foreign_key "special_events", "groups"
 end
