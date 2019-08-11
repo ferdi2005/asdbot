@@ -2,10 +2,8 @@ class MessageController < ApplicationController
   def message_process
     bot_api_key = ENV['BOT_API_KEY']
     client = HTTPClient
-    return false if params[:message].blank?
     message = params[:message].to_unsafe_h
-    logger.debug 'NOW MESSAGE'
-    logger.debug message.to_yaml
+    return false if message.nil? || message[:chat].nil?
     unless message[:text].nil? 
       text = message[:text]
     else
@@ -13,6 +11,7 @@ class MessageController < ApplicationController
     end
     type = message[:chat][:type]
     id = message[:chat][:id]
+    byebug
     username = message[:chat][:username]
     update_id = params[:update_id]
     fromid = message[:from][:id]
