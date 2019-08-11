@@ -23,7 +23,7 @@ class MessageController < ActionController::API
               @group = Group.find_by(chat_id: id)
             end
             unless @group.welcomesent
-              client.get "http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{@group.chat_id}&text=Bella zio! Sono il bot asdoso creato da Ferdinando Traversa (ferdinando.me) da idea di Valerio Bozzolan, asd! Digita /grafico per ricevere il link ad un grafico, anche in privato per averne uno personale, asd o /classifca per scoprire cose interessanti. L'impostazione automatica %C3%A8 che io invii il conto degli ASD alla fine della serata, cos%C3%AC per%C3%B2 ti perdi cose belle come la faccina dell'ASD di mezzanotte. Per modificare questa impostazione, basta digitare /nightsend ed invier%C3%B2 il messaggio di conteggio appena invii un asd"
+              Telegram.bot.send_message(chat_id: @group.chat_id, text: "Bella zio! Sono il bot asdoso creato da Ferdinando Traversa (ferdinando.me) da idea di Valerio Bozzolan, asd! Digita /grafico per ricevere il link ad un grafico, anche in privato per averne uno personale, asd o /classifca per scoprire cose interessanti. L'impostazione automatica %C3%A8 che io invii il conto degli ASD alla fine della serata, cos%C3%AC per%C3%B2 ti perdi cose belle come la faccina dell'ASD di mezzanotte. Per modificare questa impostazione, basta digitare /nightsend ed invier%C3%B2 il messaggio di conteggio appena invii un asd.")
               @group.update_attribute(:welcomesent, true)
             end
 
@@ -59,13 +59,13 @@ class MessageController < ActionController::API
             
           unless @group.nightsend
             if SpecialEvent.find_by(asd: @asd)
-              client.get "http://api.telegram.org/bot#{bot_api_key}/sendPhoto?chat_id=#{@group.chat_id}&photo=http://www.lanciano.it/faccine/asdone.gif&caption=Cos%C3%AC asdoso, asd. #{SpecialEvent.find_by(asd: @asd).text}"
+              Telegram.bot.send_photo(chat_id: @group.chat_id, photo: 'http://www.lanciano.it/faccine/asdone.gif', caption: "Cos%C3%AC asdoso, asd. #{SpecialEvent.find_by(asd: @asd).text}")
               SpecialEvent.find_by(asd: @asd).destroy
             end
             position = Group.all.sort_by{|group| group.asds.count}.pluck(:id).reverse.find_index(@group.id) + 1
-             client.get "http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{@group.chat_id}&text=Il contasd conta ben #{asdcount} (+ #{defmultiplevalue}), asd. Sei il #{position}%C2%BA gruppo per ASD inviati."
+              Telegram.bot.send_message(chat_id: @group.chat_id, text: "=Il contasd conta ben #{asdcount} (+ #{defmultiplevalue}), asd. Sei il #{position}%C2%BA gruppo per ASD inviati.")
             if @asd.created_at.strftime('%H:%M') == '00:00'
-              client.get "http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{@group.chat_id}&text=Asd di mezzanotte %F0%9F%8C%9A"
+              Telegram.bot.send_message(chat_id: @group.chat_id, text: "Asd di mezzanotte %F0%9F%8C%9A")
             end
           end
         end
@@ -77,50 +77,49 @@ class MessageController < ActionController::API
       else
         @group = Group.find_by(chat_id: id)
       end
-      client.get "http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{@group.chat_id}&text=Bella zio! Sono il bot asdoso creato da Ferdinando Traversa (ferdinando.me) da idea di Valerio Bozzolan, asd! Digita /grafico per ricevere il link ad un grafico, anche in privato per averne uno personale, asd o /classifca per scoprire cose interessanti. L'impostazione automatica %C3%A8 che io invii il conto degli ASD alla fine della serata, cos%C3%AC per%C3%B2 ti perdi cose belle come la faccina dell'ASD di mezzanotte. Per modificare questa impostazione, basta digitare /nightsend ed invier%C3%B2 il messaggio di conteggio appena invii un asd"
+      Telegram.bot.send_message(chat_id: @group.chat_id, text: "Bella zio! Sono il bot asdoso creato da Ferdinando Traversa (ferdinando.me) da idea di Valerio Bozzolan, asd! Digita /grafico per ricevere il link ad un grafico, anche in privato per averne uno personale, asd o /classifca per scoprire cose interessanti. L'impostazione automatica %C3%A8 che io invii il conto degli ASD alla fine della serata, cos%C3%AC per%C3%B2 ti perdi cose belle come la faccina dell'ASD di mezzanotte. Per modificare questa impostazione, basta digitare /nightsend ed invier%C3%B2 il messaggio di conteggio appena invii un asd.")
       @group.update_attribute(:welcomesent, true)
     end
 
     if text == '/classifica'
-      client.get "http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{id}&text=Vai su #{ENV['DOMAIN']}/classifica per vedere la classifica. Ci sono #{Group.count} che usano questo bot, comunque."
+      Telegram.bot.send_message(chat_id: id, text: "Vai su #{ENV['DOMAIN']}/classifica per vedere la classifica. Ci sono #{Group.count} che usano questo bot, comunque.")
     end 
     
     if text == '/start' && type == 'private'
-      client.get "http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{id}&text=Bella zio! Sono il bot asdoso creato da Ferdinando Traversa (ferdinando.me @ferdi2005) da idea di Valerio Bozzolan, asd! Aggiungimi ad un bel gruppo e conter%C3%B2 gli asd, altrimenti digita /grafico per il tuo grafico personal personal."
+      Telegram.bot.send_message(chat_id: id, text: "Bella zio! Sono il bot asdoso creato da Ferdinando Traversa (ferdinando.me @ferdi2005) da idea di Valerio Bozzolan, asd! Aggiungimi ad un bel gruppo e conter%C3%B2 gli asd, altrimenti digita /grafico per il tuo grafico personal personal.")
     end
 
     if text == '/grafico' && type == 'private'
       unless Sender.find_by(chat_id: fromid)
-        client.get "http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{id}&text=Non ho ancora un grafico per te, sei nuovo per me, non ti conosco. Iscriviti in qualche gruppo con questo bot e manda asd a ripetizione, poi torna da me."
+        Telegram.bot.send_message(chat_id: id, text: 'Non ho ancora un grafico per te, sei nuovo per me, non ti conosco. Iscriviti in qualche gruppo con questo bot e manda asd a ripetizione, poi torna da me.')
       else
         @sender = Sender.find_by(chat_id: fromid)
-        position = 'primo in assoluto'
         position = Sender.all.sort_by{|sender| sender.asds.count}.pluck(:id).reverse.find_index(@sender.id) + 1 if Sender.count > 0
-        client.get "http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{id}&text=Guarda il tuo grafico personalizzato per il gruppo su #{ENV['DOMAIN']}/grafico?s=#{@sender.chat_id}"
+        Telegram.bot.send_message(chat_id: id, text: "Guarda il tuo grafico personalizzato per il gruppo su #{ENV['DOMAIN']}/grafico?s=#{@sender.chat_id}")
       end
     end
       
     if text == '/grafico' && (type == 'group' || type == 'supergroup')
       unless Group.find_by(chat_id: id)
-        client.get "http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{id}&text=Non ho ancora un grafico per te, sei nuovo per me, non ti conosco. Invia qualche asd e prova questo comando."
+        Telegram.bot.send_message(chat_id: id, text: 'Non ho ancora un grafico per te, sei nuovo per me, non ti conosco. Invia qualche asd e prova questo comando.')
       else
         @group = Group.find_by(chat_id: id)
         position = Group.all.sort_by{|group| group.asds.count}.pluck(:id).reverse.find_index(@group.id) + 1
-        client.get "http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{id}&text=Guarda il tuo grafico personalizzato per il gruppo su #{ENV['DOMAIN']}/grafico?g=#{@group.chat_id}"
+        Telegram.bot.send_message(chat_id: id, text: "Guarda il tuo grafico personalizzato per il gruppo su #{ENV['DOMAIN']}/grafico?g=#{@group.chat_id}")
       end
     end
 
     if text == '/nightsend' && (type == 'group' || type == 'supergroup')
       unless Group.find_by(chat_id: id)
-        client.get "http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{id}&text=Ok, l'impostazione predefinita %C3%A8 che l'invio del conto degli asd avvenga a mezzanotte, ma con questo comando la modifico. Procedo, asd."
+        Telegram.bot.send_message(chat_id: id, text: "Ok, l'impostazione predefinita %C3%A8 che l'invio del conto degli asd avvenga a mezzanotte, ma con questo comando la modifico. Procedo, asd.")
         @group.update_attribute(:nightsend, false)
       else
         @group = Group.find_by(chat_id: id)
         if @group.nightsend
-          client.get "http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{id}&text=Ok, l'impostazione predefinita %C3%A8 che l'invio del conto degli asd avvenga a mezzanotte, ma con questo comando la modifico. Procedo, ora avrai un messaggio ogni asd, asd."
+          Telegram.bot.send_message(chat_id: id, text: "Ok, l'impostazione predefinita %C3%A8 che l'invio del conto degli asd avvenga a mezzanotte, ma con questo comando la modifico. Procedo, ora avrai un messaggio ogni asd, asd.")
           @group.update_attribute(:nightsend, false)
         else
-          client.get "http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{id}&text=Sei una persona triste, asd. Vuoi che il conteggio venga inviato a mezzanotte. Bozzolan dice s%C3%AC, Ferdi dice no. Tu dici s%C3%AC, allora conteggio a mezzanotte sia, asd"
+          Telegram.bot.send_message(chat_id: id, text: "Sei una persona triste, asd. Vuoi che il conteggio venga inviato a mezzanotte. Bozzolan dice s%C3%AC, Ferdi dice no. Tu dici s%C3%AC, allora conteggio a mezzanotte sia, asd")
           @group.update_attribute(:nightsend, true)
         end
       end
