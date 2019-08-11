@@ -1,4 +1,4 @@
-class MessageController < ApplicationController
+class MessageController < ActionController::API
   def message_process
     bot_api_key = ENV['BOT_API_KEY']
     client = HTTPClient
