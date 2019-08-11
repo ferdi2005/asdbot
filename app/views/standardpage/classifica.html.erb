@@ -2,14 +2,18 @@
 <h2>GRUPPI</h2>
 <ol>
 <% @groups.each do |group| %>
-  <li><a href="https://t.me/<%= group.username %>"><%= group.title %></a> --> <%= group.asds.count %> asd</li>
+  <% if group.asds.count > 0 %>
+    <li><a href="https://t.me/<%= group.username %>"><%= group.title %></a> --> <%= group.asds.count %> asd</li>
+  <% end %>
 <% end %>
 </ol>
 <br/>
 <h2>UTENTI</h2>
 <ol>
 <% @senders.each do |group| %>
-  <li><a href="https://t.me/<%= group.username %>"><%= group.name %></a> --> <%= group.asds.count %> asd</li>
+  <% if group.asds.count > 0 %>
+    <li><a href="https://t.me/<%= group.username %>"><%= group.name %></a> --> <%= group.asds.count %> asd</li>
+  <% end %>
 <% end %>
 </ol>
 <br/>
