@@ -2,7 +2,7 @@ class MessageController < ActionController::API
   def message_process
     begin
       message = params[:message]
-      return if message.nil? || message[:chat].nil?
+      return if message.nil? || message[:chat].nil? || message[:text].nil?
       unless message[:text].nil? 
         text = message[:text]
       else
