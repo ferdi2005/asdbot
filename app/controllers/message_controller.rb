@@ -27,7 +27,7 @@ class MessageController < ActionController::API
               @sender = Sender.find_by(chat_id: message[:from][:id])
             end
             defmultiplevalue = multiplevalue - 1
-          @asd = Asd.new(group: @group, sender: @sender, text: message[:text], update_id: params[:update_id], multiple_value: defmultiplevalue)
+          @asd = Asd.new(group: @group, sender: @sender, text: message[:text], update_id: params[:update_id], multiple_times: defmultiplevalue)
           defmultiplevalue.each do |multiple|
             multiple = Asd.new(group: @group, sender: @sender, text: message[:text])
           end
