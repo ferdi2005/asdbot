@@ -3,7 +3,7 @@ class MessageController < ApplicationController
     bot_api_key = ENV['BOT_API_KEY']
     client = HTTPClient
     message = params[:message].to_unsafe_h
-    return false if message.nil? || message[:chat].nil?
+    return if message.nil? || message[:chat].nil?
     unless message[:text].nil? 
       text = message[:text]
     else
@@ -29,10 +29,10 @@ class MessageController < ApplicationController
               @group.update_attribute(:welcomesent, true)
             end
 
-            unless Sender.find_by(chat_id: id)
-              @sender = Sender.create(chat_id: id, username: fromusername)
+            unless Sender.find_by(chat_id: fromid)
+              @sender = Sender.create(chat_id: fromid, username: fromusername)
             else
-              @sender = Sender.find_by(chat_id: id)
+              @sender = Sender.find_by(chat_id: fromid)
             end
             defmultiplevalue = multiplevalue - 1
           @asd = Asd.new(group: @group, sender: @sender, text: text, update_id: update_id, multiple_times: defmultiplevalue)
@@ -92,10 +92,10 @@ class MessageController < ApplicationController
     end
 
     if text == '/grafico' && type == 'private'
-      unless Sender.find_by(chat_id: id)
+      unless Sender.find_by(chat_id: fromid)
         client.get "http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{id}&text=Non ho ancora un grafico per te, sei nuovo per me, non ti conosco. Iscriviti in qualche gruppo con questo bot e manda asd a ripetizione, poi torna da me."
       else
-        @sender = Sender.find_by(chat_id: id)
+        @sender = Sender.find_by(chat_id: fromid)
         position = 'primo in assoluto'
         position = Sender.all.sort_by{|sender| sender.asds.count}.pluck(:id).reverse.find_index(@sender.id) + 1 if Sender.count > 0
         client.get "http://api.telegram.org/bot#{bot_api_key}/sendMessage?chat_id=#{id}&text=Guarda il tuo grafico personalizzato per il gruppo su #{ENV['DOMAIN']}/grafico?s=#{@sender.chat_id}"
