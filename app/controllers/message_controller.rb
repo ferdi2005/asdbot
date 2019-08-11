@@ -1,6 +1,5 @@
 class MessageController < ActionController::API
   def message_process
-    begin
       message = params[:message]
       return if message.nil? || message[:chat].nil? || message[:text].nil?
       unless message[:text].nil? 
@@ -156,9 +155,5 @@ class MessageController < ActionController::API
         end
       end
       render nothing: true
-    rescue => e
-      logger.fatal e
-      render nothing: true
-    end
   end
 end
