@@ -3,8 +3,8 @@ class MessageController < ActionController::API
     bot_api_key = ENV['BOT_API_KEY']
     client = HTTPClient
     return false if params[:message].blank?
-    logger.debug params[:message]
     message = params[:message].to_unsafe_h
+    logger.debug message
     text = message[:text]
     if message[:chat][:type] == 'group' || message[:chat][:type] == 'supergroup'
         if text =~ /asd/i
