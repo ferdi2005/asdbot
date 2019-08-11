@@ -141,8 +141,7 @@ class MessageController < ActionController::API
 
       if text == '/nightsend' && (type == 'group' || type == 'supergroup')
         unless Group.find_by(chat_id: id)
-          Telegram.bot.send_message(chat_id: id, text: "Ok, l'impostazione predefinitaè che l'invio del conto degli asd avvenga a mezzanotte, ma con questo comando la modifico. Procedo, asd.")
-          @group.update_attribute(:nightsend, false)
+          Telegram.bot.send_message(chat_id: id, text: "Non conosco questo gruppo.")
         else
           @group = Group.find_by(chat_id: id)
           if @group.nightsend
@@ -154,6 +153,38 @@ class MessageController < ActionController::API
           end
         end
       end
+
+      if text == '/fuoriclassifica' && (type == 'group' || type == 'supergroup')
+        unless Group.find_by(chat_id: id) 
+          Telegram.bot.send_message(chat_id: id, text: "Non conosco questo gruppo.")
+        else
+          @group = Group.find_by(chat_id: id)
+          if @group.classifica
+            Telegram.bot.send_message(chat_id: id, text: "Siete delle persone tristi e/o poco competitive? Amate la privasi anche se Google sa tutto di voi, anche come vi siete vestiti ieri, asd? Allora questo è il comando per voi. Da oggi siete fuori dalla classifica, per scelta. Datelo di nuovo per riattivare (sicuramente avete sbagliato, vero?)")
+            @group.update_attribute(:classifica, false)
+          else
+            Telegram.bot.send_message(chat_id: id, text: "Bravo! Hai fatto la scelta giusta, fai ritornare il tuo gruppo nella classifica pubblica con questo semplice comandino")
+            @group.update_attribute(:classifica, true)
+          end
+        end
+      end
+
+      if text == '/fuoriclassifica' && type == 'private'
+        unless Sender.find_by(chat_id: id) 
+          Telegram.bot.send_message(chat_id: id, text: "Non ti conosco, asd.")
+        else
+          @group = Sender.find_by(chat_id: id)
+          if @group.classifica
+            Telegram.bot.send_message(chat_id: id, text: "Sei una persona triste o poco competitiva? Questo è il comando giusto per te. Da oggi non apparirai più nella classifica pubblica.")
+            @group.update_attribute(:classifica, false)
+          else
+            Telegram.bot.send_message(chat_id: id, text: "Bravo! Hai fatto la scelta giusta, ritorna nella classifica pubblica con questo semplice comandino")
+            @group.update_attribute(:classifica, true)
+          end
+        end
+      end
+
+
       render nothing: true
   end
 end

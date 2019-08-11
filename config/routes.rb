@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  root 'standardpage#home'
   post 'message_process', to: 'message#message_process'
   get 'classifica', to: 'standardpage#classifica'
   get 'grafico', to: 'standardpage#grafico'
