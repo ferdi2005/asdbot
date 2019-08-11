@@ -1,7 +1,6 @@
 class MessageController < ActionController::API
   def message_process
     bot_api_key = ENV['BOT_API_KEY']
-    client = HTTPClient
     return false if params[:message].blank?
     message = params[:message].to_unsafe_h
     if message[:chat][:type] == 'group' || message[:chat][:type] == 'supergroup'
