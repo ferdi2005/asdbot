@@ -196,7 +196,7 @@ class MessageController < ActionController::API
       end
 
       comandi = ["/fuoriclassifica", "/classifica", "/start", "/grafico", "/nightsend"]
-      unless text.in?(comandi) && type != 'private'
+      if !text.in?(comandi) && type == 'private'
         Telegram.bot.send_message(chat_id: id, text: "Cos…? asd")
       end
       render nothing: true
