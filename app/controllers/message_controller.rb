@@ -66,7 +66,8 @@ class MessageController < ActionController::API
             @asd = Asd.create(group: @group, sender: @sender, text: text, update_id: update_id, multiple_times: defmultiplevalue)
             
             defmultiplevalue.times do
-              Asd.create(group: @group, sender: @sender, text: text, update_id: update_id)
+              tempupdateid = update_id + rand(50000000)
+              Asd.create(group: @group, sender: @sender, text: text, update_id: tempupdateid)
             end
 
               asdcount = @group.asds.count

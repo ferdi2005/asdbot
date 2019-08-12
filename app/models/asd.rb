@@ -1,7 +1,7 @@
 class Asd < ApplicationRecord
   belongs_to :group
   belongs_to :sender
-  validates :update_id, uniqueness: true 
+  validates :update_id, uniqueness: true, presence: false
   has_many :special_events
   before_create :default_values
   def default_values

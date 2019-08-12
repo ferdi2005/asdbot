@@ -5,6 +5,9 @@
   <% if group.asds.count > 0  && group.classifica %>
     <li><a href="https://t.me/<%= group.username %>"><%= group.title %></a> --> <%= group.asds.count %> asd</li>
   <% end %>
+    <% unless group.classifica %>
+      <li>Nascosto --> <%= group.asds.count %> asd</li>
+    <% end %>
 <% end %>
 </ol>
 <br/>
@@ -13,6 +16,10 @@
 <% @senders.each do |group| %>
   <% if group.asds.count > 0 && group.classifica %>
     <li><a href="https://t.me/<%= group.username %>"><%= group.name %></a> --> <%= group.asds.count %> asd</li>
+  <% end %>
+
+  <% unless group.classifica %>
+      <li>Nascosto --> <%= group.asds.count %> asd</li>
   <% end %>
 <% end %>
 </ol>
