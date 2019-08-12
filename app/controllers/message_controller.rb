@@ -20,9 +20,17 @@ class MessageController < ActionController::API
       fromusername = message[:from][:username]
 
       unless Group.find_by(chat_id: id) && (type == 'group' || type == 'supergroup')
-        @group = Group.create(chat_id: id, username: username) if id < 0
+        @group = Group.create(chat_id: id, username: username, title: message[:chat][:title]) if id < 0
       else
         @group = Group.find_by(chat_id: id)
+        title = message[:chat][:title]
+        if @group.title.nil? || @group.title != title
+          @group.update_attribute(:title, title)
+        end
+  
+        if @group.username != message[:chat][:username]
+          @group.update_attribute(:username, message[:chat][:username])
+        end  
       end
 
       unless @group.nil?
@@ -33,32 +41,25 @@ class MessageController < ActionController::API
       end
 
       unless Sender.find_by(chat_id: fromid)
-        @sender = Sender.create(chat_id: fromid, username: fromusername)
+        first_name = message[:from][:first_name]
+        last_name = message[:from][:last_name]
+        totalname = "#{first_name} #{last_name}"  
+        @sender = Sender.create(chat_id: fromid, username: fromusername, name: totalname)
       else
         @sender = Sender.find_by(chat_id: fromid)
-      end
-
-      first_name = message[:from][:first_name]
-      last_name = message[:from][:last_name]
-      totalname = "#{first_name} #{last_name}"
+        first_name = message[:from][:first_name]
+        last_name = message[:from][:last_name]
+        totalname = "#{first_name} #{last_name}"  
+        if @sender.name.nil? || @sender.name != totalname
+          @sender.update_attribute(:name, totalname)
+        end
+  
+        if @sender.username != message[:from][:username]
+          @sender.update_attribute(:username, message[:from][:username])
+        end
     
-      if @sender.name.nil? || @sender.name != totalname
-        @sender.update_attribute(:name, totalname)
       end
-
-      if @sender.username != message[:from][:username]
-        @sender.update_attribute(:username, message[:from][:username])
-      end
-
-      title = message[:chat][:title]
-      if @group.title.nil? || @group.title != title
-        @group.update_attribute(:title, title)
-      end
-
-      if @group.username != message[:chat][:username]
-        @group.update_attribute(:username, message[:chat][:username])
-      end
-
+  
       if type == 'group' || type == 'supergroup'
           if text =~ /asd/i
             multiplevalue = text.scan(/asd/i).count
