@@ -65,6 +65,12 @@ class MessageController < ActionController::API
             defmultiplevalue = multiplevalue - 1
             @asd = Asd.create(group: @group, sender: @sender, text: text, update_id: update_id, multiple_times: defmultiplevalue)
             
+            unless Asd.find_by(sender: @sender)
+              unless @group.classifica
+                Telegram.bot.send_message(chat_id: @group.chat_id, text: "Ciao amico, questo gruppo ha la classifica privata. È la prima volta che ti vedo e quindi imposto la classifica privata anche per te, non sarai visto in classifica! Se vai invece fiero della tua asdosità, manda il comando /fuoriclassifica in privato e riattiverò la tua presenza in classifica. Puoi anche dare /classifica per vedere questa classifica di cui tutti parlano o /grafico per il tuo grafico personal personal.")
+                @sender.update_attribute(classifica: false)
+              end
+            end
             precedenteconto = @group.asds.count
             defmultiplevalue.times do
               tempupdateid = update_id + rand(50000000)
@@ -188,7 +194,10 @@ class MessageController < ActionController::API
         end
       end
 
-
+      comandi = ["/fuoriclassifica", "/classifica", "/start", "/grafico", "/nightsend"]
+      unless text.in?(comandi) && type != 'private'
+        Telegram.bot.send_message(chat_id: id, text: "Cos…? asd")
+      end
       render nothing: true
   end
 end
