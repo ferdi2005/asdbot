@@ -16,4 +16,13 @@
   <% end %>
 <% end %>
 </ol>
+<br />
+<h1>Statistiche magiche</h1>
+<h3>ASD totali inviati e contati da questo bot: <%= Asd.count %></h3>
+<h3>Gruppi iscritti a questo bot: <%= Group.count %></h3>
+<h3>Utenti iscritti a questo bot (partecipanti ai gruppi): <%= Sender.count %></h3>
+<h3>Media di ASD a gruppo: <%= Asd.count / Group.count %></h3>
+<h3>Media di ASD ad utente: <%= Asd.count / Sender.count %></h3>
+<h3>Media di utenti a gruppo: <%= Sender.count / Group.count %></h3>
+<p>Grazie per aver deciso di usare @asdcounterbot!</p>
 <br/>
