@@ -20,7 +20,7 @@ class MessageController < ActionController::API
       fromusername = message[:from][:username]
 
       unless Group.find_by(chat_id: id) && (type == 'group' || type == 'supergroup')
-        @group = Group.create(chat_id: id, username: username)
+        @group = Group.create(chat_id: id, username: username) if id < 0
       else
         @group = Group.find_by(chat_id: id)
       end
@@ -104,7 +104,7 @@ class MessageController < ActionController::API
         
       if text == '/start' && (type == 'group' || type == 'supergroup')
         unless Group.find_by(chat_id: id)
-          @group = Group.create(chat_id: id, username: username)
+          @group = Group.create(chat_id: id, username: username) if id < 0
         else
           @group = Group.find_by(chat_id: id)
         end
