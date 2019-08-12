@@ -95,9 +95,9 @@ class MessageController < ActionController::API
                 SpecialEvent.find_by(asd: @asd).destroy
               end
               position = Group.all.sort_by{|group| group.asds.count}.pluck(:id).reverse.find_index(@group.id) + 1
-              altdef = "+ (#{defmultiplevalue})" if defmultiplevalue > 0
+              altdef = " (+#{defmultiplevalue})" if defmultiplevalue > 0
               altdef = "" if defmultiplevalue == 0
-              Telegram.bot.send_message(chat_id: @group.chat_id, text: "Il contasd conta ben #{precedenteconto} #{altdef}, asd. Sei il #{position}º gruppo per ASD inviati.")
+              Telegram.bot.send_message(chat_id: @group.chat_id, text: "Il contasd conta ben #{precedenteconto}#{altdef}, asd. Sei il #{position}º gruppo per ASD inviati.")
             end
             if @asd.created_at.strftime('%H:%M') == '00:00'
               Telegram.bot.send_message(chat_id: @group.chat_id, text: "Asd di mezzanotte %F0%9F%8C%9A")
