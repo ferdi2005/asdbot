@@ -62,10 +62,11 @@ class MessageController < ActionController::API
       if type == 'group' || type == 'supergroup'
           if text =~ /asd/i
             multiplevalue = text.scan(/asd/i).count
-              defmultiplevalue = multiplevalue - 1
+            defmultiplevalue = multiplevalue - 1
             @asd = Asd.create(group: @group, sender: @sender, text: text, update_id: update_id, multiple_times: defmultiplevalue)
+            
             defmultiplevalue.times do
-              Asd.create(group: @group, sender: @sender, text: text)
+              Asd.create(group: @group, sender: @sender, text: text, update_id: update_id)
             end
 
               asdcount = @group.asds.count
