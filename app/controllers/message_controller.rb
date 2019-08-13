@@ -72,19 +72,9 @@ class MessageController < ActionController::API
                 @sender.update_attribute(classifica: false)
               end
             end
-            precedenteconto = @group.asds.count
-            defmultiplevalue.times do
-              tempupdateid = update_id + rand(50000000)
-              Asd.create(group: @group, sender: @sender, text: text, update_id: tempupdateid)
-            end
+            precedenteconto = @group.asds.totalcount
               asdcount = @group.asds.count
               case asdcount
-              when 1
-                  addtext = 'Il primo asd. Benvenuto nella grande famiglia di asdbot'
-                  SpecialEvent.create(text: addtext, group: @group, asd: @asd)
-              when 10
-                  addtext = 'Il decimo asd! Complimenti, asd.'
-                  SpecialEvent.create(text: addtext, group: @group, asd: @asd)
               when 100
                   addtext = 'IL CENTESIMO ASD, ASD! COMPLIMENTS CONGRATULATIONS AUF WIDERSHEN'
                   SpecialEvent.create(text: addtext, group: @group, asd: @asd)
@@ -94,13 +84,16 @@ class MessageController < ActionController::API
               when 10000
                   addtext = '10000è un record mondiale, asd'
                   SpecialEvent.create(text: addtext, group: @group, asd: @asd)
+              when 100000
+                  addtext = '100000, sei il campione degli asd.'
+                  SpecialEvent.create(text: addtext, group: @group, asd: @asd)
               end
-              
-            unless @group.nightsend
               if SpecialEvent.find_by(asd: @asd)
                 Telegram.bot.send_photo(chat_id: @group.chat_id, photo: 'http://www.lanciano.it/faccine/asdone.gif', caption: "Così asdoso, asd. #{SpecialEvent.find_by(asd: @asd).text}")
                 SpecialEvent.find_by(asd: @asd).destroy
               end
+
+            unless @group.nightsend
               position = Group.all.sort_by{|group| group.asds.count}.pluck(:id).reverse.find_index(@group.id) + 1
               altdef = " (+#{defmultiplevalue})" if defmultiplevalue > 0
               altdef = "" if defmultiplevalue == 0

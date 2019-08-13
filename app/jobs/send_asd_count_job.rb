@@ -6,26 +6,11 @@ class SendAsdCountJob < ApplicationJob
       @group = group
       date = Date.yesterday 
       @asds = Asd.where(created_at: date.midnight..date.end_of_day, group: group)
-      if SpecialEvent.find_by(group: @group)
-        Telegram.bot.send_message(chat_id: @group.chat_id, text: "MMH... c'è qualcosa per cui dobbiamo festeggiare! (Ma non in tempo reale, perché non hai dato il comando /nightsend e quindi viene tutto inviato a mezzanotte del giorno dopo, asd). 🎉")
-        SpecialEvent.where(group: @group).each do |specialevent|
-          Telegram.bot.send_photo(chat_id: @group.chat_id, photo: "http://www.lanciano.it/faccine/asdone.gif", caption: "Così asdoso, asd. #{specialevent.text}")
-          specialevent.destroy
-        end
-      end
       position = Group.all.sort_by{|gp| gp.asds.count}.pluck(:id).reverse.find_index(@group.id) + 1
       defmultipletimes = @asds.pluck(:multiple_times).sum
-      if @group.asds.count > 0
-        Telegram.bot.send_message(chat_id: @group.chat_id, text: "È mezzanotte, ora di sapere! Il contasd di ieri conta ben #{@asds.count}, asd. Sei il #{position}º gruppo per ASD inviati. (compresi quelli multipli, che sono #{defmultipletimes})")
-      end
-    end
-
-    Group.all.each do |group|
-      date = 1.weeks.ago
-      yesterday = Date.yesterday
-      position = Group.all.sort_by{|gp| gp.asds.count}.pluck(:id).reverse.find_index(group.id) + 1
-      if Asd.where(created_at: date.midnight..yesterday.end_of_day, group: group).count == 0
-        Telegram.bot.send_message(chat_id: group.chat_id, text: "Ciao amici, è una settimana che non inviate asd! Proprio 0! Meno di 0! Asdate di più, dai. Al momento siete #{position}º nella classifica globale, digitate /classifica per osservarla")
+      @specialevent = []
+      if group.asds.count > 0
+          Telegram.bot.send_message(chat_id: @group.chat_id, text: "È mezzanotte, ora di sapere! Il contasd di ieri conta ben #{@asds.count}, asd. Sei il #{position}º gruppo per ASD inviati. (compresi quelli multipli, che sono #{defmultipletimes})")  
       end
     end
   end

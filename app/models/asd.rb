@@ -7,4 +7,7 @@ class Asd < ApplicationRecord
   def default_values
     self.multiple_times = multiple_times.presence || 0
   end
+  def self.totalcount
+    self.count + pluck(:multiple_times).sum
+  end
 end
