@@ -2,11 +2,11 @@
 <h2>GRUPPI</h2>
 <ol>
 <% @groups.each do |group| %>
-  <% if group.asds.count > 0  && group.classifica %>
-    <li><a href="https://t.me/<%= group.username %>"><%= group.title %></a> --> <%= group.asds.count %> asd</li>
+  <% if group.asds.totalcount > 0  && group.classifica %>
+    <li><a href="https://t.me/<%= group.username %>"><%= group.title %></a> --> <%= group.asds.totalcount %> asd</li>
   <% end %>
     <% unless group.classifica %>
-      <li>Nascosto --> <%= group.asds.count %> asd</li>
+      <li>Nascosto --> <%= group.asds.totalcount %> asd</li>
     <% end %>
 <% end %>
 </ol>
@@ -14,18 +14,18 @@
 <h2>UTENTI</h2>
 <ol>
 <% @senders.each do |group| %>
-  <% if group.asds.count > 0 && group.classifica %>
-    <li><a href="https://t.me/<%= group.username %>"><%= group.name %></a> --> <%= group.asds.count %> asd</li>
+  <% if group.asds.totalcount > 0 && group.classifica %>
+    <li><a href="https://t.me/<%= group.username %>"><%= group.name %></a> --> <%= group.asds.totalcount %> asd</li>
   <% end %>
 
   <% unless group.classifica %>
-      <li>Nascosto --> <%= group.asds.count %> asd</li>
+      <li>Nascosto --> <%= group.asds.totalcount %> asd</li>
   <% end %>
 <% end %>
 </ol>
 <br />
 <h1>Statistiche magiche</h1>
-<h3>ASD totali inviati e contati da questo bot: <%= Asd.count %></h3>
+<h3>ASD totali inviati e contati da questo bot: <%= Asd.all.totalcount %></h3>
 <h3>Gruppi iscritti a questo bot: <%= Group.count %></h3>
 <h3>Utenti iscritti a questo bot (partecipanti ai gruppi): <%= Sender.count %></h3>
 <h3>Media di ASD a gruppo: <%= Asd.count.to_f / Group.count.to_f %></h3>
