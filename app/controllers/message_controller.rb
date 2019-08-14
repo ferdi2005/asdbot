@@ -88,12 +88,12 @@ class MessageController < ActionController::API
                   addtext = '100000, sei il campione degli asd.'
                   SpecialEvent.create(text: addtext, group: @group, asd: @asd)
               end
-              if SpecialEvent.find_by(asd: @asd)
+              if SpecialEvent.find_by(asd: @asd) && !@group.silent
                 Telegram.bot.send_photo(chat_id: @group.chat_id, photo: 'http://www.lanciano.it/faccine/asdone.gif', caption: "Così asdoso, asd. #{SpecialEvent.find_by(asd: @asd).text}")
                 SpecialEvent.find_by(asd: @asd).destroy
               end
 
-            unless @group.nightsend
+            unless @group.nightsend || @group.silent
               position = Group.all.sort_by{|group| group.asds.count}.pluck(:id).reverse.find_index(@group.id) + 1
               altdef = " (+#{defmultiplevalue})" if defmultiplevalue > 0
               altdef = "" if defmultiplevalue == 0
