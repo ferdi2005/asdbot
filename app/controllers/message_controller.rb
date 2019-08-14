@@ -35,7 +35,7 @@ class MessageController < ActionController::API
 
       unless @group.nil?
         unless @group.welcomesent
-          Telegram.bot.send_message(chat_id: @group.chat_id, text: "Bella zio! Sono il bot asdoso creato da Ferdinando Traversa (ferdinando.me) da idea di Valerio Bozzolan, asd! Digita /grafico per ricevere il link ad un grafico, anche in privato per averne uno personale, asd o /classifca per scoprire cose interessanti. L'impostazione automaticaè che io invii il conto degli ASD alla fine della serata, così però ti perdi cose belle e non è più così funny. Per modificare questa impostazione, basta digitare /nightsend ed invierò il messaggio di conteggio appena invii un asd.")
+          Telegram.bot.send_message(chat_id: @group.chat_id, text: "Bella zio! Sono il bot asdoso creato da Ferdinando Traversa (ferdinando.me) da idea di Valerio Bozzolan, asd! Digita /grafico per ricevere il link ad un grafico, anche in privato per averne uno personale, asd o /classifica per scoprire cose interessanti. L'impostazione automaticaè che io invii il conto degli ASD alla fine della serata, così però ti perdi cose belle e non è più così funny. Per modificare questa impostazione, basta digitare /nightsend ed invierò il messaggio di conteggio appena invii un asd.")
           @group.update_attribute(:welcomesent, true)
         end
       end
@@ -112,7 +112,7 @@ class MessageController < ActionController::API
         else
           @group = Group.find_by(chat_id: id)
         end
-        Telegram.bot.send_message(chat_id: @group.chat_id, text: "Bella zio! Sono il bot asdoso creato da Ferdinando Traversa (ferdinando.me) da idea di Valerio Bozzolan, asd! Digita /grafico per ricevere il link ad un grafico, anche in privato per averne uno personale, asd o /classifca per scoprire cose interessanti. L'impostazione automatica è che io invii il conto degli ASD alla fine della serata, così però ti perdi cose belle e non è più così funny.  Per modificare questa impostazione, basta digitare /nightsend ed invierò il messaggio di conteggio appena invii un asd.")
+        Telegram.bot.send_message(chat_id: @group.chat_id, text: "Bella zio! Sono il bot asdoso creato da Ferdinando Traversa (ferdinando.me) da idea di Valerio Bozzolan, asd! Digita /grafico per ricevere il link ad un grafico, anche in privato per averne uno personale, asd o /classifica per scoprire cose interessanti. L'impostazione automatica è che io invii il conto degli ASD alla fine della serata, così però ti perdi cose belle e non è più così funny.  Per modificare questa impostazione, basta digitare /nightsend ed invierò il messaggio di conteggio appena invii un asd.")
         @group.update_attribute(:welcomesent, true)
       end
 
@@ -154,6 +154,21 @@ class MessageController < ActionController::API
           else
             Telegram.bot.send_message(chat_id: id, text: "Sei una persona triste, asd. Vuoi che il conteggio venga inviato a mezzanotte. Bozzolan dice sì, Ferdi dice no. Tu dici sì, allora conteggio a mezzanotte sia, asd")
             @group.update_attribute(:nightsend, true)
+          end
+        end
+      end
+
+      if text == '/silent' && (type == 'group' || type == 'supergroup')
+        unless Group.find_by(chat_id: id)
+          Telegram.bot.send_message(chat_id: id, text: "Non conosco questo gruppo.")
+        else
+          @group = Group.find_by(chat_id: id)
+          if @group.silent
+            Telegram.bot.send_message(chat_id: id, text: "Oh grazie, sei tornato nella luce, pensavo di dover rimanere muto per sempre! Ora, il tuo gruppo ha l'invio del conto notturno degli asd impostato a #{@group.nightsend ? 'attivo' : 'disattivo'}. Se vuoi che invii il conto degli asd la notte attivalo, altrimenti se vuoi un messaggio ogni asd disattivalo. Lo fai col comando /nightsend")
+            @group.update_attribute(:silent, false)
+          else
+            Telegram.bot.send_message(chat_id: id, text: "Se vuoi che me ne rimanga zitto zitto nelle tenebre allora usa questo comando, per far che ritorni a parlare digitalo di nuovo.")
+            @group.update_attribute(:silent, true)
           end
         end
       end
