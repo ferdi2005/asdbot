@@ -1,7 +1,7 @@
 class StandardpageController < ApplicationController
   def classifica
-    @groups = Group.all.sort_by{|sender| sender.asds.count}.reverse
-    @senders = Sender.all.sort_by{|sender| sender.asds.count}.reverse
+    @groups = Group.all.sort_by{|sender| sender.asds.totalcount}.reverse
+    @senders = Sender.all.sort_by{|sender| sender.asds.totalcount}.reverse
   end
 
   def grafico

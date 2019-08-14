@@ -94,7 +94,7 @@ class MessageController < ActionController::API
               end
 
             unless @group.nightsend || @group.silent
-              position = Group.all.sort_by{|group| group.asds.count}.pluck(:id).reverse.find_index(@group.id) + 1
+              position = Group.all.sort_by{|group| group.asds.totalcount}.pluck(:id).reverse.find_index(@group.id) + 1
               altdef = " (+#{defmultiplevalue})" if defmultiplevalue > 0
               altdef = "" if defmultiplevalue == 0
               Telegram.bot.send_message(chat_id: @group.chat_id, text: "Il contasd conta ben #{precedenteconto + 1}#{altdef}, asd. Sei il #{position}º gruppo per ASD inviati.")
@@ -129,7 +129,7 @@ class MessageController < ActionController::API
           Telegram.bot.send_message(chat_id: id, text: 'Non ho ancora un grafico per te, sei nuovo per me, non ti conosco. Iscriviti in qualche gruppo con questo bot e manda asd a ripetizione, poi torna da me.')
         else
           @sender = Sender.find_by(chat_id: fromid)
-          position = Sender.all.sort_by{|sender| sender.asds.count}.pluck(:id).reverse.find_index(@sender.id) + 1 if Sender.count > 0
+          position = Sender.all.sort_by{|sender| sender.asds.totalcount}.pluck(:id).reverse.find_index(@sender.id) + 1 if Sender.count > 0
           Telegram.bot.send_message(chat_id: id, text: "Guarda il tuo grafico personalizzato per il gruppo su #{ENV['DOMAIN']}/grafico?s=#{@sender.chat_id} Inoltre sappi che sei il #{position}º inviatore di asd nel mondo!")
         end
       end
