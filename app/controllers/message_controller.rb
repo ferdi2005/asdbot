@@ -74,7 +74,7 @@ class MessageController < ActionController::API
               end
             end
               asdcount = @group.asds.count
-              case asdcount
+              case @group.asds.totalcount
               when 100
                   addtext = 'IL CENTESIMO ASD, ASD! COMPLIMENTS CONGRATULATIONS AUF WIDERSHEN'
                   SpecialEvent.create(text: addtext, group: @group, asd: @asd)
