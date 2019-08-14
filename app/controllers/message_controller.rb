@@ -64,6 +64,7 @@ class MessageController < ActionController::API
           if text =~ /asd/i
             multiplevalue = text.scan(/asd/i).count
             defmultiplevalue = multiplevalue - 1
+            precedenteconto = @group.asds.totalcount
             @asd = Asd.create(group: @group, sender: @sender, text: text, update_id: update_id, multiple_times: defmultiplevalue)
             
             unless Asd.find_by(sender: @sender)
@@ -72,7 +73,6 @@ class MessageController < ActionController::API
                 @sender.update_attribute(classifica: false)
               end
             end
-            precedenteconto = @group.asds.totalcount
               asdcount = @group.asds.count
               case asdcount
               when 100
