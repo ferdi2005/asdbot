@@ -1,9 +1,9 @@
 <% unless @sender.nil? %>
-  <%= line_chart Asd.where(sender: @sender).group_by_day(:created_at).totalcount %>
+  <%= line_chart Asd.where(sender: @sender).group_by_day(:created_at).count %>
 <% end %> 
 
 <% unless @group.nil? %>
-    <%= line_chart Asd.where(group: @group).group_by_day(:created_at).totalcount %>
+    <%= line_chart Asd.where(group: @group).group_by_day(:created_at).count %>
 <% end %>
 
 <script>
