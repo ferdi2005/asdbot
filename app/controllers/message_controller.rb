@@ -120,7 +120,7 @@ end
       end
 
       if text == '/classifica'
-        Telegram.bot.send_message(chat_id: id, text: "Vai su #{ENV['DOMAIN']}/classifica per vedere la classifica. Ci sono #{Group.count} che usano questo bot, comunque.")
+        Telegram.bot.send_message(chat_id: id, text: "Vai su #{ENV['DOMAIN']}/classifica per vedere la classifica.")
       end 
       
       if text == '/start' && type == 'private'
