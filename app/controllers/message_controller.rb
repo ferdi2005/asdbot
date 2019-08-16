@@ -1,5 +1,6 @@
 class MessageController < ActionController::API
   def message_process
+    ENV['DOMAIN'] = 'https://asd.ferdinando.me'
       message = params[:message]
       return if message.nil? || message[:chat].nil? || message[:text].nil?
       unless message[:text].nil? 
