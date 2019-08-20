@@ -20,7 +20,7 @@ gem 'groupdate'
 gem "sentry-raven"
 gem 'telegram-bot'
 gem 'sidekiq'
-gem 'sidekiq-cron'
+gem 'sidekiq-scheduler'
 gem 'rails-assets-sweetalert2', '~> 5.1.1', source: 'https://rails-assets.org' 
 # Use CoffeeScript for .coffee assets and views
 gem 'coffee-rails', '~> 4.2'
