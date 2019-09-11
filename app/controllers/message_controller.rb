@@ -36,7 +36,7 @@ class MessageController < ActionController::API
       
         unless @group.nil?
           unless @group.welcomesent
-            Telegram.bot.send_message(chat_id: @group.chat_id, text: "Bella zio! Sono il bot asdoso creato da Ferdinando Traversa (ferdinando.me) da idea di Valerio Bozzolan, asd! Digita /grafico per ricevere il link ad un grafico, anche in privato per averne uno personale, asd o /classifica per scoprire cose interessanti. L'impostazione automaticaè che io invii il conto degli ASD alla fine della serata, così però ti perdi cose belle e non è più così funny. Per modificare questa impostazione, basta digitare /nightsend ed invierò il messaggio di conteggio appena invii un asd. Se vuoi che il bot non parli, ma veda e senta, usa /silent. Ti prego! Non togliere il bot, lascialo per fini statistici.")
+            Telegram.bot.send_message(chat_id: @group.chat_id, text: "Bella zio! Sono il bot asdoso creato da Ferdinando Traversa (ferdinando.me) da idea di Valerio Bozzolan, asd! Digita /grafico per ricevere il link ad un grafico, anche in privato per averne uno personale, asd o /classifica per scoprire cose interessanti. L'impostazione automaticaè che io invii il conto degli ASD alla fine della serata, così però ti perdi cose belle e non è più così funny. Per modificare questa impostazione, basta digitare /nightsend ed invierò il messaggio di conteggio appena invii un asd. Se vuoi che il bot non parli, ma veda e senta, usa /silent. Ti prego! Non togliere il bot, lascialo per fini statistici. Il gruppo ufficiale è @asdfest, entra lì per suggerire nuove funzionalità o per asdare insieme.")
             @group.update_attribute(:welcomesent, true)
           end
 
@@ -129,7 +129,7 @@ class MessageController < ActionController::API
           else
             @group = Group.find_by(chat_id: id)
           end
-          Telegram.bot.send_message(chat_id: @group.chat_id, text: "Bella zio! Sono il bot asdoso creato da Ferdinando Traversa (ferdinando.me) da idea di Valerio Bozzolan, asd! Digita /grafico per ricevere il link ad un grafico, anche in privato per averne uno personale, asd o /classifica per scoprire cose interessanti. L'impostazione automaticaè che io invii il conto degli ASD alla fine della serata, così però ti perdi cose belle e non è più così funny. Per modificare questa impostazione, basta digitare /nightsend ed invierò il messaggio di conteggio appena invii un asd. Se vuoi che il bot non parli, ma veda e senta, usa /silent. Ti prego! Non togliere il bot, lascialo per fini statistici.")
+          Telegram.bot.send_message(chat_id: @group.chat_id, text: "Bella zio! Sono il bot asdoso creato da Ferdinando Traversa (ferdinando.me) da idea di Valerio Bozzolan, asd! Digita /grafico per ricevere il link ad un grafico, anche in privato per averne uno personale, asd o /classifica per scoprire cose interessanti. L'impostazione automaticaè che io invii il conto degli ASD alla fine della serata, così però ti perdi cose belle e non è più così funny. Per modificare questa impostazione, basta digitare /nightsend ed invierò il messaggio di conteggio appena invii un asd. Se vuoi che il bot non parli, ma veda e senta, usa /silent. Ti prego! Non togliere il bot, lascialo per fini statistici. Il gruppo ufficiale è @asdfest, entra lì per suggerire nuove funzionalità o per asdare insieme.")
           @group.update_attribute(:welcomesent, true)
         end
 
@@ -138,7 +138,7 @@ class MessageController < ActionController::API
         end 
         
         if text == '/start' && type == 'private'
-          Telegram.bot.send_message(chat_id: id, text: "Bella zio! Sono il bot asdoso creato da Ferdinando Traversa (ferdinando.me @ferdi2005) da idea di Valerio Bozzolan, asd! Aggiungimi ad un bel gruppo e conterò gli asd, altrimenti digita /grafico per il tuo grafico personal personal.")
+          Telegram.bot.send_message(chat_id: id, text: "Bella zio! Sono il bot asdoso creato da Ferdinando Traversa (ferdinando.me @ferdi2005) da idea di Valerio Bozzolan, asd! Aggiungimi ad un bel gruppo e conterò gli asd, altrimenti digita /grafico per il tuo grafico personal personal. Il gruppo ufficiale è @asdfest, entra lì per suggerire nuove funzionalità o per asdare insieme.")
         end
 
         if text == '/grafico' && type == 'private'
@@ -235,9 +235,28 @@ class MessageController < ActionController::API
           end
         end
 
-        comandi = ["/fuoriclassifica", "/classifica", "/start", "/grafico", "/nightsend"]
+        comandi = ["/fuoriclassifica", "/classifica", "/start", "/grafico", "/nightsend", "/annuncio", "/todo"]
+        admins = [82247861, 55632382]
         if !text.in?(comandi) && type == 'private'
           Telegram.bot.send_message(chat_id: id, text: "Cos…? asd")
+        end
+
+        if text == '/annunciogruppo' && fromid.in?(admins)
+          annuncio = text.split('/annuncio')[1].strip
+          Group.each do |group|
+            Telegram.bot.send_message(chat_id: group.chat_id, text: annuncio)
+          end
+        end
+
+        if text == '/annuncioprivato' && fromid.in?(admins)
+          annuncio = text.split('/annuncio')[1].strip
+          Sender.each do |group|
+            Telegram.bot.send_message(chat_id: group.chat_id, text: annuncio)
+          end
+        end
+
+        if text == '/todo'
+          Telegram.bot.send_message(chat_id: id, text: 'Invia una mail a me@ferdinando.me')
         end
       rescue => e
           Telegram.bot.send_message(chat_id: 82247861, text: e.to_s)
