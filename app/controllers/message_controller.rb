@@ -205,7 +205,7 @@ class MessageController < ActionController::API
           end
         end
 
-        if text == '/eliminazione' && (type == 'group' || type == 'supergroup')
+        if @group.admin && text == '/eliminazione' && (type == 'group' || type == 'supergroup')
           unless Group.find_by(chat_id: id) 
             Telegram.bot.send_message(chat_id: id, text: "Non conosco questo gruppo.")
           else
