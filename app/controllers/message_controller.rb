@@ -263,7 +263,7 @@ class MessageController < ActionController::API
           Telegram.bot.send_message(chat_id: id, text: 'Invia una mail a todo@ferdinando.me')
         end
 
-        if text = '/gruppoufficiale'
+        if text == '/gruppoufficiale'
           Telegram.bot.send_message(chat_id: id, text: 'Entra nel gruppo ufficiale del nostro bot, dove solo asd sono ammessi: @asdfest')
         end
       rescue => e
