@@ -245,14 +245,14 @@ class MessageController < ActionController::API
           Telegram.bot.send_message(chat_id: id, text: "Cos…? asd")
         end
 
-        if text == '/annunciogruppo' && fromid.in?(admins)
+        if text == '/annunciogruppo' && admins.include?(fromid)
           annuncio = text.split('/annuncio')[1].strip
           Group.each do |group|
             Telegram.bot.send_message(chat_id: group.chat_id, text: annuncio)
           end
         end
 
-        if text == '/annuncioprivato' && fromid.in?(admins)
+        if text == '/annuncioprivato' && admins.include?(fromid)
           annuncio = text.split('/annuncio')[1].strip
           Sender.each do |group|
             Telegram.bot.send_message(chat_id: group.chat_id, text: annuncio)
@@ -260,7 +260,7 @@ class MessageController < ActionController::API
         end
 
         if text == '/todo'
-          Telegram.bot.send_message(chat_id: id, text: 'Invia una mail a me@ferdinando.me')
+          Telegram.bot.send_message(chat_id: id, text: 'Invia una mail a todo@ferdinando.me')
         end
       rescue => e
           Telegram.bot.send_message(chat_id: 82247861, text: e.to_s)
