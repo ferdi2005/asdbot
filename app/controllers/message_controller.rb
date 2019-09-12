@@ -120,7 +120,7 @@ class MessageController < ActionController::API
             end 
             
             if @group.eliminazione && text.match?(/asd/i) == false
-              Telegram.bot.delete_message(chat_id: @group.chat_id, message_id: message[:id])
+              Telegram.bot.delete_message(chat_id: @group.chat_id, message_id: message[:message_id])
             end
 
         end
