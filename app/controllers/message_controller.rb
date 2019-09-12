@@ -119,7 +119,7 @@ class MessageController < ActionController::API
               end
             end 
             
-            unless @group.eliminazione && text =~ /asd/i
+            if @group.eliminazione && text.match?(/asd/i) == false
               Telegram.bot.delete_message(chat_id: @group.chat_id, message_id: message[:id])
             end
 
@@ -207,18 +207,20 @@ class MessageController < ActionController::API
           end
         end
 
-        if @group.admin && text == '/eliminazione' && (type == 'group' || type == 'supergroup')
+       if text == '/eliminazione' && (type == 'group' || type == 'supergroup')
           unless Group.find_by(chat_id: id) 
             Telegram.bot.send_message(chat_id: id, text: "Non conosco questo gruppo.")
           else
             @group = Group.find_by(chat_id: id)
-            if @group.eliminazione
+            if @group.admin && @group.eliminazione
               Telegram.bot.send_message(chat_id: id, text: "Ora basta eliminare tutti i messaggi insieme bot.")
-              @group.update_attribute(:classifica, false)
-            else
+              @group.update_attribute(:eliminazione, false)
+            elsif !@group.eliminazione
               Telegram.bot.send_message(chat_id: id, text: "Da ora eliminerò tutti i messaggi che non sono asd, perché questo è il gruppo @asdfest o una sua imitazione scrausa!")
-              @group.update_attribute(:classifica, true)
-            end
+              @group.update_attribute(:eliminazione, true)
+            elsif !@group.admin
+              Telegram.bot.send_message(chat_id: id, text: "Non mi hai messo admin!")
+            end 
           end
         end
 
