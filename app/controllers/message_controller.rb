@@ -247,14 +247,14 @@ class MessageController < ActionController::API
 
         if text == '/annunciogruppo' && admins.include?(fromid)
           annuncio = text.split('/annuncio')[1].strip
-          Group.each do |group|
+          Group.all.each do |group|
             Telegram.bot.send_message(chat_id: group.chat_id, text: annuncio)
           end
         end
 
         if text == '/annuncioprivato' && admins.include?(fromid)
           annuncio = text.split('/annuncio')[1].strip
-          Sender.each do |group|
+          Sender.all.each do |group|
             Telegram.bot.send_message(chat_id: group.chat_id, text: annuncio)
           end
         end
