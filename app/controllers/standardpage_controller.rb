@@ -35,6 +35,5 @@ class StandardpageController < ApplicationController
   end
 
   def home
-    ENV['DOMAIN'] = "http://0.0.0.0:3000"
   end
 end
