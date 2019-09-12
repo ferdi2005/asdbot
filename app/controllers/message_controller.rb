@@ -117,7 +117,9 @@ class MessageController < ActionController::API
                   Telegram.bot.send_message(chat_id: @group.chat_id, text: "Asd di mezzanotte 🌚")
                 end
               end
-            elsif @group.eliminazione && text =~ /asd/i
+            end 
+            
+            unless @group.eliminazione && text =~ /asd/i
               Telegram.bot.delete_message(chat_id: @group.chat_id, message_id: message[:id])
             end
 
