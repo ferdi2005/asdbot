@@ -2,8 +2,8 @@ class SendAsdCountJob < ApplicationJob
   queue_as :default
 
   def perform(*args)
-   begin
     Group.where(nightsend: true).each do |group|
+      begin
       @group = group
       date = Date.yesterday 
       @asds = Asd.where(created_at: date.midnight..date.end_of_day, group: group)
@@ -12,9 +12,9 @@ class SendAsdCountJob < ApplicationJob
       if group.asds.count > 0 && !@group.silent
           Telegram.bot.send_message(chat_id: @group.chat_id, text: "È mezzanotte, ora di sapere! Il contasd di ieri conta ben #{@asds.count} (+#{defmultipletimes} multipli) per un totale di #{@asds.totalcount} asds, asd. Sei il #{position}º gruppo per ASD inviati. (Digita /silent per disattivarmi, non togliermi!)")  
       end
+      rescue => e
+        puts e
+      end
     end
-  rescue => e
-    puts e
-  end
   end
 end

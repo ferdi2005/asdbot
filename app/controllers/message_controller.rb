@@ -206,6 +206,14 @@ class MessageController < ActionController::API
             end
           end
         end
+        if text == '/statistiche' && (type == 'group' || type == 'supergroup')
+          unless Group.find_by(chat_id: id) 
+            Telegram.bot.send_message(chat_id: id, text: "Non conosco questo gruppo.")
+          else
+            @group = Group.find_by(chat_id: id)
+              Telegram.bot.send_message(chat_id: id, text: "Asd inviati: #{@group.asds.count}")
+          end
+        end
 
        if text == '/eliminazione' && (type == 'group' || type == 'supergroup')
           unless Group.find_by(chat_id: id) 
