@@ -39,12 +39,14 @@ class MessageController < ActionController::API
             Telegram.bot.send_message(chat_id: @group.chat_id, text: "Bella zio! Sono il bot asdoso creato da Ferdinando Traversa (ferdinando.me) da idea di Valerio Bozzolan, asd! Digita /grafico per ricevere il link ad un grafico, anche in privato per averne uno personale, asd o /classifica per scoprire cose interessanti. L'impostazione automaticaè che io invii il conto degli ASD alla fine della serata, così però ti perdi cose belle e non è più così funny. Per modificare questa impostazione, basta digitare /nightsend ed invierò il messaggio di conteggio appena invii un asd. Se vuoi che il bot non parli, ma veda e senta, usa /silent. Ti prego! Non togliere il bot, lascialo per fini statistici. Il gruppo ufficiale è @asdfest, entra lì per suggerire nuove funzionalità o per asdare insieme.")
             @group.update_attribute(:welcomesent, true)
           end
-
+        
           @admins = Telegram.bot.get_chat_administrators(chat_id: @group.chat_id)
           @admins['result'].each do |result|
+          unless result.nil?
             if result['user']['username'].downcase == ENV['BOT_USERNAME'].downcase
               @adminok = true 
             end
+          end
           end
             if @adminok
               @group.update_attribute(:admin, true)
