@@ -43,9 +43,14 @@ class MessageController < ActionController::API
           @admins = Telegram.bot.get_chat_administrators(chat_id: @group.chat_id)
           @admins['result'].each do |result|
           unless result.nil?
+            unless result['user'].nil?
+              unless result['user']['username'].nil?
             if result['user']['username'].downcase == ENV['BOT_USERNAME'].downcase
               @adminok = true 
             end
+          end
+        end
+      
           end
           end
             if @adminok
