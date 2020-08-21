@@ -1,1 +1,49 @@
 <h1> AsdBot</h1>
+<ul>
+  <li><%= button_to 'Classifica', classifica_path, class: 'button', method: :get %></li>
+  
+  <!-- <li><button id="grafico-link" onClick="swalDoes()" class="button">Grafico</a></li>
+  <script>
+  function swalDoes() {
+    Swal.fire({
+  title: "Inserisci l'username della persona di cui vuoi vedere il grafico",
+  input: 'text',
+  inputAttributes: {
+    autocapitalize: 'off'
+  },
+  showCancelButton: true,
+  confirmButtonText: 'Guarda il grafico',
+  showLoaderOnConfirm: true,
+  preConfirm: (login) => {
+    return fetch(`<%= ENV['DOMAIN']%>/usernametoid.json?username=${login}`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(response.statusText)
+        }
+        return response.json()
+      })
+      .catch(error => {
+        Swal.showValidationMessage(
+          `Errore! Utente non trovato!`
+        )
+      })
+  },
+  allowOutsideClick: () => !Swal.isLoading()
+}).then((result) => {
+  console.log(result.status);
+  if (result.status == '200') {
+    console.log('200');
+    window.location.href = `<%= ENV['DOMAIN'] %>/g?=${result.chat_id}&username=${login}`;
+  } else if (result.status == '201') {
+        console.log('201');
+    window.location.href = `<%= ENV['DOMAIN'] %>/s?=${result.chat_id}&username=${login}`;
+  } else if (result.status == '404') {
+    Swal.fire({
+      type: 'error',
+      title: `Nessun utente trovato`,
+    })
+  }
+})
+  }
+  </script> -->
+</ul>

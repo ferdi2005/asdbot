@@ -2,18 +2,35 @@
 <h2>GRUPPI</h2>
 <ol>
 <% @groups.each do |group| %>
-  <% if group.asds.count > 0 %>
-    <li><a href="https://t.me/<%= group.username %>"><%= group.title %></a> --> <%= group.asds.count %> asd</li>
+  <% if group.asds.totalcount > 0  && group.classifica %>
+    <li><a href="https://t.me/<%= group.username %>"><%= group.title %></a> --> <%= group.asds.totalcount %> asd</li>
   <% end %>
+    <% unless group.classifica %>
+      <li>Nascosto --> <%= group.asds.totalcount %> asd</li>
+    <% end %>
 <% end %>
 </ol>
 <br/>
 <h2>UTENTI</h2>
 <ol>
 <% @senders.each do |group| %>
-  <% if group.asds.count > 0 %>
-    <li><a href="https://t.me/<%= group.username %>"><%= group.name %></a> --> <%= group.asds.count %> asd</li>
+  <% if group.asds.totalcount > 0 && group.classifica %>
+    <li><a href="https://t.me/<%= group.username %>"><%= group.name %></a> --> <%= group.asds.totalcount %> asd</li>
+  <% end %>
+
+  <% unless group.classifica %>
+      <li>Nascosto --> <%= group.asds.totalcount %> asd</li>
   <% end %>
 <% end %>
 </ol>
+<br />
+<h1>Statistiche magiche</h1>
+<h3>ASD totali inviati e contati da questo bot: <%= Asd.all.totalcount %></h3>
+<h3>Gruppi iscritti a questo bot: <%= Group.count %></h3>
+<h3>Utenti iscritti a questo bot (partecipanti ai gruppi): <%= Sender.count %></h3>
+<h3>Media di ASD a gruppo: <%= Asd.totalcount.to_f/ Group.count.to_f %></h3>
+<h3>Media di ASD ad utente: <%= Asd.totalcount.to_f/ Sender.count.to_f %></h3>
+<h3>Media di utenti a gruppo: <%= Sender.count.to_f / Group.count.to_f %></h3>
+<h3>Media di asd multipli a messaggio asdsoso: <%= Asd.all.totalcount.to_f / Asd.all.count.to_f %></h3>
+<p>Grazie per aver deciso di usare @asdcounterbot!</p>
 <br/>

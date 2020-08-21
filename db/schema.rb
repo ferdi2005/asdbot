@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_11_141634) do
+ActiveRecord::Schema.define(version: 2019_09_11_221023) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -45,6 +45,12 @@ ActiveRecord::Schema.define(version: 2019_08_11_141634) do
     t.datetime "updated_at", null: false
     t.boolean "welcomesent", default: false
     t.boolean "nightsend"
+    t.string "title"
+    t.boolean "classifica", default: true
+    t.boolean "silent", default: false
+    t.boolean "admin"
+    t.boolean "deletenotasd"
+    t.boolean "eliminazione", default: false
   end
 
   create_table "senders", force: :cascade do |t|
@@ -52,6 +58,8 @@ ActiveRecord::Schema.define(version: 2019_08_11_141634) do
     t.string "username"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "name"
+    t.boolean "classifica", default: true
   end
 
   create_table "special_events", force: :cascade do |t|
