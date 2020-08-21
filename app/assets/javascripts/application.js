@@ -1,14 +1,17 @@
-// This is a manifest file that'll be compiled into application.js, which will include all the files
-// listed below.
+// This is a manifest file that'll be compiled into application.js, which will
+// include all the files listed below.
 //
-// Any JavaScript/Coffee file within this directory, lib/assets/javascripts, or any plugin's
-// vendor/assets/javascripts directory can be referenced here using a relative path.
+// Any JavaScript/Coffee file within this directory, lib/assets/javascripts, or
+// any plugin's vendor/assets/javascripts directory can be referenced here using
+// a relative path.
 //
-// It's not advisable to add code directly here, but if you do, it'll appear at the bottom of the
-// compiled file. JavaScript code in this file should be added after the last require_* statement.
+// It's not advisable to add code directly here, but if you do, it'll appear at
+// the bottom of the compiled file. JavaScript code in this file should be added
+// after the last require_* statement.
 //
-// Read Sprockets README (https://github.com/rails/sprockets#sprockets-directives) for details
-// about supported directives.
+// Read Sprockets README
+// (https://github.com/rails/sprockets#sprockets-directives) for details about
+// supported directives.
 //
 //= require rails-ujs
 //= require activestorage
@@ -44,14 +47,16 @@ function getAllUrlParams(url) {
 
       // (optional) keep case consistent
       paramName = paramName.toLowerCase();
-      if (typeof paramValue === 'string') paramValue = paramValue.toLowerCase();
+      if (typeof paramValue === 'string')
+        paramValue = paramValue.toLowerCase();
 
       // if the paramName ends with square brackets, e.g. colors[] or colors[2]
       if (paramName.match(/\[(\d+)?\]$/)) {
 
         // create key if it doesn't exist
         var key = paramName.replace(/\[(\d+)?\]/, '');
-        if (!obj[key]) obj[key] = [];
+        if (!obj[key])
+          obj[key] = [];
 
         // if it's an indexed array e.g. colors[2]
         if (paramName.match(/\[\d+\]$/)) {
@@ -67,9 +72,9 @@ function getAllUrlParams(url) {
         if (!obj[paramName]) {
           // if it doesn't exist, create property
           obj[paramName] = paramValue;
-        } else if (obj[paramName] && typeof obj[paramName] === 'string'){
+        } else if (obj[paramName] && typeof obj[paramName] === 'string') {
           // if property does exist and it's a string, convert it to an array
-          obj[paramName] = [obj[paramName]];
+          obj[paramName] = [ obj[paramName] ];
           obj[paramName].push(paramValue);
         } else {
           // otherwise add the property
