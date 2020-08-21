@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Asd < ApplicationRecord
   belongs_to :group
   belongs_to :sender
@@ -7,7 +9,8 @@ class Asd < ApplicationRecord
   def default_values
     self.multiple_times = multiple_times.presence || 0
   end
+
   def self.totalcount
-    self.count + pluck(:multiple_times).sum
+    count + pluck(:multiple_times).sum
   end
 end

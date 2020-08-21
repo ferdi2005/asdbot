@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Rails.application.routes.draw do
   root 'standardpage#home'
   post 'message_process', to: 'message#message_process'
