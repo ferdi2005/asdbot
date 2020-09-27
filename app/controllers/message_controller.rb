@@ -98,7 +98,7 @@ class MessageController < ActionController::API
                     SpecialEvent.create(text: addtext, group: @group, asd: @asd)
                 end
 
-                if @group.asds.totalcount.split("0") == ["1"]
+                if @group.asds.totalcount.to_s.split("0") == ["1"]
                   case Random.rand(1..3)
                     when 1
                         addtext = "#{@group.asds.totalcount.count} asd, wow! Questo gruppo, così asdoso, asd"
