@@ -45,14 +45,14 @@ class MessageController < ActionController::API
           unless result.nil?
             unless result['user'].nil?
               unless result['user']['username'].nil?
-            if result['user']['username'].downcase == ENV['BOT_USERNAME'].downcase
-              @adminok = true 
+                if result['user']['username'].downcase == ENV['BOT_USERNAME'].downcase
+                  @adminok = true 
+                end
+              end
             end
           end
+
         end
-      
-          end
-          end
             if @adminok
               @group.update_attribute(:admin, true)
             else
@@ -87,43 +87,49 @@ class MessageController < ActionController::API
               precedenteconto = @group.asds.totalcount
               @asd = Asd.create(group: @group, sender: @sender, text: text, update_id: update_id, multiple_times: defmultiplevalue)
               
-              unless Asd.find_by(sender: @sender)
-                unless @group.classifica
-                  Telegram.bot.send_message(chat_id: @group.chat_id, text: "Ciao amico, questo gruppo ha la classifica privata. È la prima volta che ti vedo e quindi imposto la classifica privata anche per te, non sarai visto in classifica! Se vai invece fiero della tua asdosità, manda il comando /fuoriclassifica in privato e riattiverò la tua presenza in classifica. Puoi anche dare /classifica per vedere questa classifica di cui tutti parlano o /grafico per il tuo grafico personal personal.")
-                  @sender.update_attribute(classifica: false)
+                unless Asd.find_by(sender: @sender)
+                  unless @group.classifica
+                    Telegram.bot.send_message(chat_id: @group.chat_id, text: "Ciao amico, questo gruppo ha la classifica privata. È la prima volta che ti vedo e quindi imposto la classifica privata anche per te, non sarai visto in classifica! Se vai invece fiero della tua asdosità, manda il comando /fuoriclassifica in privato e riattiverò la tua presenza in classifica. Puoi anche dare /classifica per vedere questa classifica di cui tutti parlano o /grafico per il tuo grafico personal personal.")
+                    @sender.update_attribute(classifica: false)
+                  end
                 end
-              end
-                asdcount = @group.asds.count
-                case @group.asds.totalcount
-                when 100
-                    addtext = 'IL CENTESIMO ASD, ASD! COMPLIMENTS CONGRATULATIONS AUF WIDERSHEN'
-                    SpecialEvent.create(text: addtext, group: @group, asd: @asd)
-                when 1000
-                    addtext = '1000 asd, wow! Questo gruppo, così asdoso, asd'
-                    SpecialEvent.create(text: addtext, group: @group, asd: @asd)
-                when 10000
-                    addtext = '10000è un record mondiale, asd'
-                    SpecialEvent.create(text: addtext, group: @group, asd: @asd)
-                when 100000
-                    addtext = '100000, sei il campione degli asd.'
+                if @group.asds.totalcount == 100
+                    addtext = 'IL CENTESIMO ASD, ASD! COMPLIMENTS CONGRATULATIONS'
                     SpecialEvent.create(text: addtext, group: @group, asd: @asd)
                 end
+
+                if @group.asds.totalcount.split("0") == ["1"]
+                  case Random.rand(1..3)
+                    when 1
+                        addtext = "#{@group.asds.totalcount.count} asd, wow! Questo gruppo, così asdoso, asd"
+                        SpecialEvent.create(text: addtext, group: @group, asd: @asd)
+                    when 2
+                        addtext = "#{@group.asds.totalcount.count} è un record mondiale, asd"
+                        SpecialEvent.create(text: addtext, group: @group, asd: @asd)
+                    when 3
+                        addtext = "#{@group.asds.totalcount.count}, sei il campione degli asd."
+                        SpecialEvent.create(text: addtext, group: @group, asd: @asd)
+                  end
+                end
+
                 if SpecialEvent.find_by(asd: @asd) && !@group.silent
                   Telegram.bot.send_photo(chat_id: @group.chat_id, photo: 'http://www.lanciano.it/faccine/asdone.gif', caption: "Così asdoso, asd. #{SpecialEvent.find_by(asd: @asd).text}")
                   SpecialEvent.find_by(asd: @asd).destroy
                 end
 
-              unless @group.nightsend || @group.silent
-                position = Group.all.sort_by{|group| group.asds.totalcount}.pluck(:id).reverse.find_index(@group.id) + 1
-                altdef = " (+#{defmultiplevalue})" if defmultiplevalue > 0
-                altdef = "" if defmultiplevalue == 0
-                Telegram.bot.send_message(chat_id: @group.chat_id, text: "Il contasd conta ben #{precedenteconto + 1}#{altdef}, asd. Sei il #{position}º gruppo per ASD inviati.")
-              end
-              unless @asd.created_at.nil?
-                if @asd.created_at.strftime('%H:%M') == '00:00'
-                  Telegram.bot.send_message(chat_id: @group.chat_id, text: "Asd di mezzanotte 🌚")
+                unless @group.nightsend || @group.silent
+                  position = Group.all.sort_by{|group| group.asds.totalcount}.pluck(:id).reverse.find_index(@group.id) + 1
+                  altdef = " (+#{defmultiplevalue})" if defmultiplevalue > 0
+                  altdef = "" if defmultiplevalue == 0
+                  Telegram.bot.send_message(chat_id: @group.chat_id, text: "Il contasd conta ben #{precedenteconto + 1}#{altdef}, asd. Sei il #{position}º gruppo per ASD inviati.")
                 end
-              end
+                unless @asd.created_at.nil?
+                  if @asd.created_at.strftime('%H:%M') == '00:00'
+                    Telegram.bot.send_message(chat_id: @group.chat_id, text: "Asd di mezzanotte 🌚")
+                  elsif @asd.created_at.strftime('%H:%M') == '12:00'
+                    Telegram.bot.send_message(chat_id: @group.chat_id, text: "Asd di mezzogiorno 🌞")
+                  end
+                end
             end 
             
             if @group.eliminazione && text.match?(/asd/i) == false
@@ -165,7 +171,7 @@ class MessageController < ActionController::API
             Telegram.bot.send_message(chat_id: id, text: 'Non ho ancora un grafico per te, sei nuovo per me, non ti conosco. Invia qualche asd e prova questo comando.')
           else
             @group = Group.find_by(chat_id: id)
-            Telegram.bot.send_message(chat_id: id, text: "Guarda il tuo grafico personalizzato per il gruppo su #{ENV['DOMAIN']}/grafico?g=#{@group.chat_id}")
+            Telegram.bot.send_message(chat_id: id, text: "Guarda il tuo grafico personalizzato per il gruppo su #{ENV['DOMAIN']}/grafico?g=#{@group.chat_id} Ulteriori informazioni col comando /statistiche")
           end
         end
 
@@ -217,12 +223,13 @@ class MessageController < ActionController::API
           unless Group.find_by(chat_id: id) 
             Telegram.bot.send_message(chat_id: id, text: "Non conosco questo gruppo.")
           else
-            @group = Group.find_by(chat_id: id)
-              Telegram.bot.send_message(chat_id: id, text: "Asd inviati: #{@group.asds.count}")
+            @group = Group.find_by(chat_id: id) 
+            position = Group.all.sort_by{|group| group.asds.totalcount}.pluck(:id).reverse.find_index(@group.id) + 1 if Group.count > 0
+            Telegram.bot.send_message(chat_id: id, text: "Asd singoli inviati: #{@group.asds.count}. \n Asd inviati: #{@group.asds.totalcount}. \n Sei il #{position} gruppo per asd inviati! Scopri il tuo grafico col comando /grafico o guarda la classifica col comando /classifica")
           end
         end
 
-       if text == '/eliminazione' && (type == 'group' || type == 'supergroup')
+        if text == '/eliminazione' && (type == 'group' || type == 'supergroup')
           unless Group.find_by(chat_id: id) 
             Telegram.bot.send_message(chat_id: id, text: "Non conosco questo gruppo.")
           else
