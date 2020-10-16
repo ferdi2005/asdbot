@@ -101,13 +101,13 @@ class MessageController < ActionController::API
                 if @group.asds.totalcount.to_s.split("0") == ["1"]
                   case Random.rand(1..3)
                     when 1
-                        addtext = "#{@group.asds.totalcount.count} asd, wow! Questo gruppo, così asdoso, asd"
+                        addtext = "#{@group.asds.totalcount} asd, wow! Questo gruppo, così asdoso, asd"
                         SpecialEvent.create(text: addtext, group: @group, asd: @asd)
                     when 2
-                        addtext = "#{@group.asds.totalcount.count} è un record mondiale, asd"
+                        addtext = "#{@group.asds.totalcount} è un record mondiale, asd"
                         SpecialEvent.create(text: addtext, group: @group, asd: @asd)
                     when 3
-                        addtext = "#{@group.asds.totalcount.count}, sei il campione degli asd."
+                        addtext = "#{@group.asds.totalcount}, sei il campione degli asd."
                         SpecialEvent.create(text: addtext, group: @group, asd: @asd)
                   end
                 end
