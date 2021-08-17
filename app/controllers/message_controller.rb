@@ -2,12 +2,14 @@ class MessageController < ActionController::API
   def message_process
     begin
         message = params[:message]
-        return if message.nil? || message[:chat].nil? || message[:text].nil?
+        return if message.nil? || message[:chat].nil?
+
         unless message[:text].nil? 
           text = message[:text]
         else
           text = message[:caption]
         end
+        
         if text.split('@').count == 2
           if text.split('@')[1] == ENV['BOT_USERNAME']
             text = text.split('@')[0]
