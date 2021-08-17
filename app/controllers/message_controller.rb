@@ -9,7 +9,9 @@ class MessageController < ActionController::API
         else
           text = message[:caption]
         end
-        
+
+        return if text.nil?
+
         if text.split('@').count == 2
           if text.split('@')[1] == ENV['BOT_USERNAME']
             text = text.split('@')[0]
