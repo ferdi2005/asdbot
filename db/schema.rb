@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_11_221023) do
+ActiveRecord::Schema.define(version: 2021_12_30_130749) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -18,7 +18,7 @@ ActiveRecord::Schema.define(version: 2019_09_11_221023) do
   create_table "asds", force: :cascade do |t|
     t.bigint "group_id"
     t.bigint "sender_id"
-    t.integer "update_id"
+    t.bigint "update_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "text"
@@ -54,7 +54,7 @@ ActiveRecord::Schema.define(version: 2019_09_11_221023) do
   end
 
   create_table "senders", force: :cascade do |t|
-    t.integer "chat_id"
+    t.bigint "chat_id"
     t.string "username"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
