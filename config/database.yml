@@ -11,6 +11,9 @@ test:
 
 production:
   adapter: postgresql
-  database: my_database_production
+  host: localhost
+  database: asdbot_production
+  username: asdbot
+  password: <%= ENV["DATABASE_PASSWORD"] %>
   pool: 5
   timeout: 5000
