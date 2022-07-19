@@ -4,7 +4,7 @@ lock "~> 3.17.0"
 set :application, "asdbot"
 
 server 'c.ferdi.cc', port: 22, roles: [:web, :app, :db], primary: true
-set :repo_url, "git@github.com:ferdi2005/monumenti_backend.git"
+set :repo_url, "git@github.com:ferdi2005/asdbot.git"
 set :sidekiq_service_unit_name, "#{fetch(:application)}-sidekiq"
 
 set :user, 'deploy'
